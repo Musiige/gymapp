@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Subscription;
+use App\Models\WorkoutAssignment;
 
 #[Fillable(['name', 'email', 'password','phone','role'])]
 #[Hidden(['password', 'remember_token'])]
@@ -29,4 +31,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function subscriptions()
+{
+    return $this->hasMany(Subscription::class);
+}
+
+public function workoutAssignments()
+{
+    return $this->hasMany(WorkoutAssignment::class, 'client_id');
+}
 }

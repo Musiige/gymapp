@@ -44,7 +44,9 @@
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">No Active Package</h3>
                     <p class="text-gray-500 mb-4">You have not selected a membership package yet.</p>
                     <a href="{{ route('client.subscription') }}"
-                        class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-md text-sm"
+                    style="background-color:#4f46e5; color:#ffffff;"
+            style="background-color:#4f46e5; color:#ffffff;"
+class="inline-block font-semibold py-2 px-6 rounded-md text-sm"
                         Choose a Package
                     </a>
                 </div>

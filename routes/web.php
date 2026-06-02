@@ -37,6 +37,25 @@ Route::post('/client/subscription', [App\Http\Controllers\Client\SubscriptionCon
         return view('trainer.dashboard');
     })->name('trainer.dashboard');
 
+    // Trainer routes
+Route::get('/trainer/clients', [App\Http\Controllers\Trainer\ClientController::class, 'index'])
+    ->name('trainer.clients');
+
+Route::get('/trainer/attendance', [App\Http\Controllers\Trainer\AttendanceController::class, 'index'])
+    ->name('trainer.attendance');
+
+Route::post('/trainer/attendance', [App\Http\Controllers\Trainer\AttendanceController::class, 'store'])
+    ->name('trainer.attendance.store');
+
+Route::get('/trainer/workouts', [App\Http\Controllers\Trainer\WorkoutController::class, 'index'])
+    ->name('trainer.workouts');
+
+Route::post('/trainer/workouts', [App\Http\Controllers\Trainer\WorkoutController::class, 'store'])
+    ->name('trainer.workouts.store');
+
+Route::post('/trainer/workouts/assign', [App\Http\Controllers\Trainer\WorkoutController::class, 'assign'])
+    ->name('trainer.workouts.assign');
+
     Route::get('/admin/dashboard', function () {
         abort_unless(Auth::user()->role === 'admin', 403);
         return view('admin.dashboard');
