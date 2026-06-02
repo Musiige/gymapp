@@ -56,10 +56,8 @@ Route::post('/trainer/workouts', [App\Http\Controllers\Trainer\WorkoutController
 Route::post('/trainer/workouts/assign', [App\Http\Controllers\Trainer\WorkoutController::class, 'assign'])
     ->name('trainer.workouts.assign');
 
-    Route::get('/admin/dashboard', function () {
-        abort_unless(Auth::user()->role === 'admin', 403);
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+   Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
+    ->name('admin.dashboard');
 });
 
 require __DIR__.'/auth.php';
