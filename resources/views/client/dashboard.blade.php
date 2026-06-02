@@ -16,11 +16,11 @@
 
             {{-- Subscription status --}}
             @php
-                $subscription = \App\Models\Subscription::where('user_id', Auth::id())
-                    ->whereIn('status', ['active', 'pending'])
-                    ->with('membership')
-                    ->latest()
-                    ->first();
+               $subscription = \App\Models\Subscription::where('user_id', Auth::id())
+    ->whereIn('status', ['active', 'pending'])
+    ->with(['membership', 'payment'])
+    ->latest()
+    ->first();
 
                 $workouts = \App\Models\WorkoutAssignment::where('client_id', Auth::id())
                     ->with('workout.trainer')
@@ -46,10 +46,19 @@
                             {{ $subscription->status }}
                         </span>
                     </p>
-                    <a href="{{ route('client.subscription') }}"
-                        class="inline-block mt-4 text-indigo-600 hover:underline text-sm">
-                        Change package
-                    </a>
+                   <div class="flex gap-4 mt-4 flex-wrap">
+    @if(!$subscription->payment || $subscription->payment->status !== 'paid')
+        <a href="{{ route('client.payment', $subscription->id) }}"
+            style="background-color:#4f46e5; color:#ffffff;"
+            class="inline-block font-semibold py-2 px-6 rounded-md text-sm">
+            Pay Now
+        </a>
+    @endif
+    <a href="{{ route('client.subscription') }}"
+        class="inline-block mt-0 text-indigo-600 hover:underline text-sm self-center">
+        Change package
+    </a>
+</div>
                 </div>
             @else
                 <div class="bg-white shadow-sm rounded-xl border border-gray-200 p-6">

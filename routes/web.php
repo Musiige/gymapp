@@ -32,6 +32,12 @@ Route::middleware('auth')->group(function () {
 Route::post('/client/subscription', [App\Http\Controllers\Client\SubscriptionController::class, 'store'])
     ->name('client.subscription.store');
 
+    Route::get('/client/payment/{subscription}', [App\Http\Controllers\Client\PaymentController::class, 'show'])
+    ->name('client.payment');
+
+Route::post('/client/payment/{subscription}', [App\Http\Controllers\Client\PaymentController::class, 'process'])
+    ->name('client.payment.process');
+
     Route::get('/trainer/dashboard', function () {
         abort_unless(Auth::user()->role === 'trainer', 403);
         return view('trainer.dashboard');
