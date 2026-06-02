@@ -6,7 +6,7 @@
     <div class="py-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-            {{-- Stats row --}}
+            {{-- Client and trainer counts --}}
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 text-center">
                     <p class="text-3xl font-bold text-indigo-600">{{ $totalClients }}</p>
@@ -18,13 +18,125 @@
                 </div>
                 <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 text-center">
                     <p class="text-3xl font-bold text-indigo-600">{{ $weeklyAttendance }}</p>
-                    <p class="text-sm text-gray-500 mt-1">This Week's Attendance</p>
+                    <p class="text-sm text-gray-500 mt-1">Weekly Attendance</p>
                 </div>
                 <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 text-center">
                     <p class="text-3xl font-bold text-indigo-600">{{ $monthlyAttendance }}</p>
-                    <p class="text-sm text-gray-500 mt-1">This Month's Attendance</p>
+                    <p class="text-sm text-gray-500 mt-1">Monthly Attendance</p>
                 </div>
             </div>
+
+            {{-- Revenue cards --}}
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="bg-white rounded-xl border border-green-200 shadow-sm p-5 text-center">
+                    <p class="text-xs text-gray-400 mb-1">Today</p>
+                    <p class="text-xl font-bold text-green-600">UGX {{ number_format($todayRevenue) }}</p>
+                    <p class="text-sm text-gray-500 mt-1">Revenue</p>
+                </div>
+                <div class="bg-white rounded-xl border border-green-200 shadow-sm p-5 text-center">
+                    <p class="text-xs text-gray-400 mb-1">This Week</p>
+                    <p class="text-xl font-bold text-green-600">UGX {{ number_format($weeklyRevenue) }}</p>
+                    <p class="text-sm text-gray-500 mt-1">Revenue</p>
+                </div>
+                <div class="bg-white rounded-xl border border-green-200 shadow-sm p-5 text-center">
+                    <p class="text-xs text-gray-400 mb-1">This Month</p>
+                    <p class="text-xl font-bold text-green-600">UGX {{ number_format($monthlyRevenue) }}</p>
+                    <p class="text-sm text-gray-500 mt-1">Revenue</p>
+                </div>
+                <div class="bg-white rounded-xl border border-green-200 shadow-sm p-5 text-center">
+                    <p class="text-xs text-gray-400 mb-1">All Time</p>
+                    <p class="text-xl font-bold text-green-600">UGX {{ number_format($totalRevenue) }}</p>
+                    <p class="text-sm text-gray-500 mt-1">Revenue</p>
+                </div>
+            </div>
+
+            {{-- Payment status summary --}}
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                <h3 class="font-semibold text-gray-800 mb-4">Payment Status Summary</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center bg-green-50 rounded-lg p-4">
+                        <p class="text-2xl font-bold text-green-600">
+                            {{ $paymentSummary['paid']->total ?? 0 }}
+                        </p>
+                        <p class="text-sm text-gray-600 mt-1">Fully Paid</p>
+                    </div>
+                    <div class="text-center bg-yellow-50 rounded-lg p-4">
+                        <p class="text-2xl font-bold text-yellow-600">
+                            {{ $paymentSummary['half-paid']->total ?? 0 }}
+                        </p>
+                        <p class="text-sm text-gray-600 mt-1">Half Paid</p>
+                    </div>
+                    <div class="text-center bg-red-50 rounded-lg p-4">
+                        <p class="text-2xl font-bold text-red-600">
+                            {{ $paymentSummary['unpaid']->total ?? 0 }}
+                        </p>
+                        <p class="text-sm text-gray-600 mt-1">Unpaid</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Revenue by day this month --}}
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                <h3 class="font-semibold text-gray-800 mb-4">
+                    Daily Revenue — {{ now()->format('F Y') }}
+                </h3>
+                @if($revenueByDay->isEmpty())
+                    <p class="text-gray-500 text-sm">No payments recorded this month yet.</p>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="pb-3 text-gray-500 font-medium">Date</th>
+                                    <th class="pb-3 text-gray-500 font-medium text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($revenueByDay as $day)
+                                    <tr class="border-b border-gray-50">
+                                        <td class="py-3 text-gray-700">
+                                            {{ \Carbon\Carbon::parse($day->date)->format('d M Y') }}
+                                        </td>
+                                        <td class="py-3 text-right font-semibold text-green-600">
+                                            UGX {{ number_format($day->total) }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="pt-3 font-semibold text-gray-800">Monthly Total</td>
+                                    <td class="pt-3 text-right font-bold text-green-700">
+                                        UGX {{ number_format($revenueByDay->sum('total')) }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Expiring soon --}}
+            @if($expiringSoon->isNotEmpty())
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                    <h3 class="font-semibold text-yellow-800 mb-4">
+                        ⚠️ Subscriptions Expiring Within 3 Days
+                    </h3>
+                    <div class="flex flex-col gap-3">
+                        @foreach($expiringSoon as $sub)
+                            <div class="flex justify-between items-center bg-white rounded-lg p-4 border border-yellow-100">
+                                <div>
+                                    <p class="font-medium text-gray-900">{{ $sub->user->name }}</p>
+                                    <p class="text-xs text-gray-500">{{ $sub->membership->name }}</p>
+                                </div>
+                                <p class="text-sm font-semibold text-yellow-700">
+                                    Expires {{ \Carbon\Carbon::parse($sub->end_date)->format('d M Y') }}
+                                </p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             {{-- Attendance by session slot --}}
             <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
@@ -56,7 +168,9 @@
                             <div class="flex justify-between items-center border-b border-gray-100 pb-3">
                                 <div>
                                     <p class="font-medium text-gray-900">{{ $record->client->name }}</p>
-                                    <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($record->attended_at)->format('h:i A') }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ \Carbon\Carbon::parse($record->attended_at)->format('h:i A') }}
+                                    </p>
                                 </div>
                                 <span class="text-xs font-semibold px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 capitalize">
                                     {{ $record->session_slot }}
@@ -79,8 +193,9 @@
                                 <tr class="border-b border-gray-200">
                                     <th class="pb-3 text-gray-500 font-medium">Client</th>
                                     <th class="pb-3 text-gray-500 font-medium">Package</th>
-                                    <th class="pb-3 text-gray-500 font-medium">Start</th>
                                     <th class="pb-3 text-gray-500 font-medium">Expires</th>
+                                    <th class="pb-3 text-gray-500 font-medium">Payment</th>
+                                    <th class="pb-3 text-gray-500 font-medium">Balance</th>
                                     <th class="pb-3 text-gray-500 font-medium">Status</th>
                                 </tr>
                             </thead>
@@ -89,8 +204,23 @@
                                     <tr class="border-b border-gray-50">
                                         <td class="py-3 font-medium text-gray-900">{{ $sub->user->name }}</td>
                                         <td class="py-3 text-gray-600">{{ $sub->membership->name }}</td>
-                                        <td class="py-3 text-gray-600">{{ \Carbon\Carbon::parse($sub->start_date)->format('d M Y') }}</td>
-                                        <td class="py-3 text-gray-600">{{ \Carbon\Carbon::parse($sub->end_date)->format('d M Y') }}</td>
+                                        <td class="py-3 text-gray-600">
+                                            {{ \Carbon\Carbon::parse($sub->end_date)->format('d M Y') }}
+                                        </td>
+                                        <td class="py-3 text-gray-600">
+                                            @if($sub->payment)
+                                                UGX {{ number_format($sub->payment->amount_paid) }}
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+                                        <td class="py-3 text-gray-600">
+                                            @if($sub->payment)
+                                                UGX {{ number_format($sub->payment->balance) }}
+                                            @else
+                                                UGX {{ number_format($sub->membership->price) }}
+                                            @endif
+                                        </td>
                                         <td class="py-3">
                                             <span class="text-xs font-semibold px-2 py-1 rounded-full capitalize
                                                 {{ $sub->status === 'active' ? 'bg-green-100 text-green-700' :
@@ -115,9 +245,7 @@
                 @else
                     <div class="flex flex-col gap-3">
                         @foreach($clients as $client)
-                            @php
-                                $sub = $client->subscriptions->last();
-                            @endphp
+                            @php $sub = $client->subscriptions->last(); @endphp
                             <div class="flex justify-between items-center border-b border-gray-100 pb-3">
                                 <div>
                                     <p class="font-medium text-gray-900">{{ $client->name }}</p>
@@ -133,7 +261,9 @@
                                             {{ $sub->status }}
                                         </span>
                                     @else
-                                        <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">No package</span>
+                                        <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">
+                                            No package
+                                        </span>
                                     @endif
                                 </div>
                             </div>
