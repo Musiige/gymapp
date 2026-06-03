@@ -64,6 +64,12 @@ Route::post('/trainer/workouts/assign', [App\Http\Controllers\Trainer\WorkoutCon
 
    Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
     ->name('admin.dashboard');
+
+    Route::post('/client/fcm-token', function (Illuminate\Http\Request $request) {
+    $request->validate(['token' => 'required|string']);
+    Auth::user()->update(['fcm_token' => $request->token]);
+    return response()->json(['success' => true]);
+})->name('client.fcm.token');
 });
 
 require __DIR__.'/auth.php';
