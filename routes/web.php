@@ -65,11 +65,19 @@ Route::post('/trainer/workouts/assign', [App\Http\Controllers\Trainer\WorkoutCon
    Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
     ->name('admin.dashboard');
 
-    Route::post('/client/fcm-token', function (Illuminate\Http\Request $request) {
+   Route::post('/client/fcm-token', function (Illuminate\Http\Request $request) {
     $request->validate(['token' => 'required|string']);
-    Auth::user()->update(['fcm_token' => $request->token]);
+    $user = \App\Models\User::find(Auth::id());
+    $user->fcm_token = $request->token;
+    $user->save();
     return response()->json(['success' => true]);
 })->name('client.fcm.token');
+
+Route::get('/admin/announcements', [App\Http\Controllers\Admin\AnnouncementController::class, 'index'])
+    ->name('admin.announcements');
+
+Route::post('/admin/announcements', [App\Http\Controllers\Admin\AnnouncementController::class, 'send'])
+    ->name('admin.announcements.send');
 });
 
 require __DIR__.'/auth.php';

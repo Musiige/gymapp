@@ -66,7 +66,7 @@
         <div class="subtitle">Scan to check in or register</div>
 
         <div class="qr-wrapper">
-            {!! QrCode::size(220)->generate('http://192.168.1.70/gymapp/public/register') !!}
+            {!! QrCode::size(220)->generate('http://192.168.1.65/gymapp/public/register') !!}
         </div>
 
         <div class="instructions">
