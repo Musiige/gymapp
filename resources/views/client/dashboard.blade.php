@@ -16,14 +16,12 @@
             ->count();
     @endphp
 
-    <div style="padding-top:8px">
+    <div style="margin-bottom:24px">
         <p style="color:#777;font-size:13px">Good {{ now()->hour < 12 ? 'morning' : (now()->hour < 17 ? 'afternoon' : 'evening') }} 💪</p>
         <h2 style="color:#fff;font-size:22px;font-weight:800;margin-top:4px">
             Welcome, <span style="color:#FF6B00">{{ explode(' ', Auth::user()->name)[0] }}</span>
         </h2>
     </div>
-
-    <div style="height:20px"></div>
 
     <div class="bfh-stat-grid">
         <div class="bfh-stat">
@@ -46,8 +44,8 @@
 
     @if($subscription)
         @php
-            $total = $subscription->membership->duration_days;
-            $elapsed = now()->diffInDays($subscription->start_date);
+            $total   = max(1, $subscription->membership->duration_days);
+            $elapsed = (int) \Carbon\Carbon::parse($subscription->start_date)->diffInDays(now());
             $remaining = max(0, $total - $elapsed);
             $percent = min(100, round(($remaining / $total) * 100));
         @endphp
@@ -81,7 +79,7 @@
         </div>
     @endif
 
-    <div class="bfh-section-title">My workouts</div>
+    <div class="bfh-section-title" style="margin-top:8px">My workouts</div>
 
     @if($workouts->isEmpty())
         <div class="bfh-card">
@@ -89,14 +87,12 @@
         </div>
     @else
         @foreach($workouts as $assignment)
-            <div class="bfh-card" style="display:flex;align-items:center;gap:12px">
-                <div style="width:40px;height:40px;background:#2a2a2a;border:0.5px solid #3a3a3a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:16px;font-weight:700;flex-shrink:0">
-                    {{ strtoupper(substr($assignment->workout->title, 0, 1)) }}
-                </div>
-                <div style="flex:1">
-                    <p style="color:#fff;font-size:14px;font-weight:500">{{ $assignment->workout->title }}</p>
-                    <p style="color:#555;font-size:12px;margin-top:2px">{{ $assignment->workout->trainer->name }}</p>
-                    <p style="color:#444;font-size:11px;margin-top:2px">{{ $assignment->workout->description }}</p>
+            <div class="bfh-card" style="display:flex;align-items:center;gap:14px">
+                <div class="bfh-icon-box">{{ strtoupper(substr($assignment->workout->title, 0, 1)) }}</div>
+                <div style="flex:1;min-width:0">
+                    <p style="color:#fff;font-size:14px;font-weight:600">{{ $assignment->workout->title }}</p>
+                    <p style="color:#555;font-size:12px;margin-top:2px">by {{ $assignment->workout->trainer->name }}</p>
+                    <p style="color:#444;font-size:12px;margin-top:4px;line-height:1.5">{{ $assignment->workout->description }}</p>
                 </div>
             </div>
         @endforeach

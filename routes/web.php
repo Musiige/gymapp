@@ -80,4 +80,10 @@ Route::post('/admin/announcements', [App\Http\Controllers\Admin\AnnouncementCont
     ->name('admin.announcements.send');
 });
 
+Route::get('/client/profile', [App\Http\Controllers\Client\ProfileController::class, 'index'])
+    ->name('client.profile');
+
+Route::post('/client/profile', [App\Http\Controllers\Client\ProfileController::class, 'update'])
+    ->name('client.profile.update');
+
 require __DIR__.'/auth.php';
