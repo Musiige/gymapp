@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Becky Fitness Hub</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet"/>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #141414; color: #fff; font-family: 'Figtree', sans-serif; min-height: 100vh; }
+        .bfh-topbar { background: #0a0a0a; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid #2a2a2a; position: sticky; top: 0; z-index: 100; }
+        .bfh-logo-main { color: #FF6B00; font-size: 15px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; line-height: 1; }
+        .bfh-logo-sub { color: #888; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; }
+        .bfh-avatar { width: 36px; height: 36px; background: #1e1e1e; border: 0.5px solid #3a3a3a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FF6B00; font-size: 13px; font-weight: 700; }
+        .bfh-content { padding: 20px 20px 100px; max-width: 480px; margin: 0 auto; }
+        .bfh-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0a; border-top: 0.5px solid #1e1e1e; display: flex; justify-content: space-around; padding: 10px 0 14px; z-index: 100; }
+        .bfh-nav a { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #444; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none; }
+        .bfh-nav a.active { color: #FF6B00; }
+        .bfh-nav a svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        .bfh-nav a.active .nav-dot { width: 4px; height: 4px; background: #FF6B00; border-radius: 50%; margin: 0 auto; }
+        .bfh-card { background: #1e1e1e; border: 0.5px solid #2e2e2e; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+        .bfh-card.orange-border { border-color: #FF6B00; }
+        .bfh-label { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+        .bfh-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .bfh-stat { background: #1e1e1e; border: 0.5px solid #2e2e2e; border-radius: 12px; padding: 14px; }
+        .bfh-stat-label { color: #777; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+        .bfh-stat-value { color: #FF6B00; font-size: 22px; font-weight: 700; margin-top: 4px; }
+        .bfh-stat-value.grey { color: #aaa; }
+        .bfh-stat-sub { color: #555; font-size: 11px; margin-top: 2px; }
+        .bfh-btn { background: #FF6B00; color: #fff; border: none; border-radius: 12px; padding: 14px; width: 100%; font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: block; text-align: center; text-decoration: none; }
+        .bfh-btn:hover { background: #e05f00; color: #fff; }
+        .bfh-btn.outline { background: transparent; border: 0.5px solid #FF6B00; color: #FF6B00; }
+        .bfh-btn.outline:hover { background: #FF6B00; color: #fff; }
+        .bfh-btn.grey { background: #1e1e1e; border: 0.5px solid #2e2e2e; color: #aaa; }
+        .bfh-input { background: #1e1e1e; border: 0.5px solid #2e2e2e; border-radius: 10px; padding: 12px 14px; width: 100%; color: #fff; font-size: 14px; outline: none; }
+        .bfh-input:focus { border-color: #FF6B00; }
+        .bfh-input::placeholder { color: #555; }
+        .bfh-select { background: #1e1e1e; border: 0.5px solid #2e2e2e; border-radius: 10px; padding: 12px 14px; width: 100%; color: #fff; font-size: 14px; outline: none; appearance: none; }
+        .bfh-select:focus { border-color: #FF6B00; }
+        .bfh-form-group { margin-bottom: 16px; }
+        .bfh-form-label { color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
+        .bfh-error { color: #ff4444; font-size: 12px; margin-top: 4px; }
+        .bfh-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .bfh-badge.active { background: #FF6B00; color: #fff; }
+        .bfh-badge.pending { background: #2a2a2a; color: #FF6B00; border: 0.5px solid #FF6B00; }
+        .bfh-badge.expired { background: #2a2a2a; color: #888; }
+        .bfh-badge.paid { background: #1a3a1a; color: #4caf50; }
+        .bfh-badge.half { background: #3a2a0a; color: #FF6B00; }
+        .bfh-badge.unpaid { background: #3a1a1a; color: #ff4444; }
+        .bfh-progress-bar { background: #2a2a2a; border-radius: 4px; height: 4px; margin-top: 12px; }
+        .bfh-progress-fill { background: #FF6B00; height: 4px; border-radius: 4px; }
+        .bfh-divider { height: 0.5px; background: #222; margin: 16px 0; }
+        .bfh-row { display: flex; justify-content: space-between; align-items: center; }
+        .bfh-alert-success { background: #1a3a1a; border: 0.5px solid #2a5a2a; color: #4caf50; padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
+        .bfh-alert-error { background: #3a1a1a; border: 0.5px solid #5a2a2a; color: #ff4444; padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
+        .bfh-section-title { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    @auth
+    <div class="bfh-topbar">
+        <div>
+            <div class="bfh-logo-main">Becky</div>
+            <div class="bfh-logo-sub">Fitness Hub</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+            <div class="bfh-avatar">
+                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" style="background:none;border:none;color:#555;font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">Out</button>
+            </form>
+        </div>
+    </div>
+    @endauth
+
+    @guest
+    <div class="bfh-topbar">
+        <div>
+            <div class="bfh-logo-main">Becky</div>
+            <div class="bfh-logo-sub">Fitness Hub</div>
+        </div>
+    </div>
+    @endguest
+
+    <div class="bfh-content">
+        @if(session('success'))
+            <div class="bfh-alert-success">{{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="bfh-alert-error">{{ session('error') }}</div>
+        @endif
+
+        {{ $slot }}
+    </div>
+
+    @auth
+    @php $role = Auth::user()->role; @endphp
+    @if($role === 'client')
+    <nav class="bfh-nav">
+        <a href="{{ route('client.dashboard') }}" class="{{ request()->routeIs('client.dashboard') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="{{ route('client.subscription') }}" class="{{ request()->routeIs('client.subscription') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span>Plans</span>
+        </a>
+        <a href="#" class="{{ request()->routeIs('client.payment*') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            <span>Pay</span>
+        </a>
+        <a href="#" class="">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+    @elseif($role === 'trainer')
+    <nav class="bfh-nav">
+        <a href="{{ route('trainer.dashboard') }}" class="{{ request()->routeIs('trainer.dashboard') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="{{ route('trainer.clients') }}" class="{{ request()->routeIs('trainer.clients') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Clients</span>
+        </a>
+        <a href="{{ route('trainer.attendance') }}" class="{{ request()->routeIs('trainer.attendance') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span>Attend</span>
+        </a>
+        <a href="{{ route('trainer.workouts') }}" class="{{ request()->routeIs('trainer.workouts') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            <span>Workouts</span>
+        </a>
+    </nav>
+    @elseif($role === 'admin')
+    <nav class="bfh-nav">
+        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Dashboard</span>
+        </a>
+        <a href="{{ route('admin.announcements') }}" class="{{ request()->routeIs('admin.announcements') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+            <span>Announce</span>
+        </a>
+    </nav>
+    @endif
+    @endauth
+
+    @auth
+    @if(Auth::user()->role === 'client')
+    <button id="notif-test-btn" style="
+        position: fixed;
+        bottom: 80px;
+        right: 16px;
+        background: #1e1e1e;
+        color: #FF6B00;
+        border: 0.5px solid #FF6B00;
+        padding: 10px 14px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        z-index: 200;
+        cursor: pointer;
+        letter-spacing: 1px;
+    ">🔔 Notify</button>
+
+    <script>
+        async function loadFirebaseAndRequest() {
+            try {
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+                const { getMessaging, getToken, onMessage } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js');
+                const firebaseConfig = {
+                    apiKey: "{{ env('FIREBASE_API_KEY') }}",
+                    projectId: "{{ env('FIREBASE_PROJECT_ID') }}",
+                    messagingSenderId: "{{ env('FCM_SENDER_ID') }}",
+                    appId: "{{ env('FIREBASE_APP_ID') }}"
+                };
+                const app = initializeApp(firebaseConfig);
+                let messaging;
+                if ('serviceWorker' in navigator) {
+                    await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                    await navigator.serviceWorker.ready;
+                    messaging = getMessaging(app);
+                } else { return; }
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    const token = await getToken(messaging, { vapidKey: "{{ env('FIREBASE_VAPID_KEY') }}" });
+                    if (token) {
+                        await fetch('/client/fcm-token', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                            body: JSON.stringify({ token: token })
+                        });
+                        document.getElementById('notif-test-btn').style.display = 'none';
+                    }
+                }
+                onMessage(messaging, (payload) => {
+                    const toast = document.createElement('div');
+                    toast.style.cssText = 'position:fixed;top:20px;right:16px;left:16px;background:#1e1e1e;border:0.5px solid #FF6B00;color:#fff;padding:16px;border-radius:12px;z-index:9999;font-family:sans-serif;';
+                    toast.innerHTML = '<p style="font-weight:700;margin:0 0 4px;color:#FF6B00;">🔔 ' + payload.notification.title + '</p><p style="font-size:13px;margin:0;color:#aaa;">' + payload.notification.body + '</p>';
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 6000);
+                });
+            } catch (e) { console.log(e); }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('notif-test-btn');
+            if (btn) btn.addEventListener('click', loadFirebaseAndRequest);
+        });
+    </script>
+    @endif
+    @endauth
+
+</body>
+</html>
