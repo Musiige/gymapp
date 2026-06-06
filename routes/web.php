@@ -26,8 +26,11 @@ Route::middleware('auth')->group(function () {
         return view('client.dashboard');
     })->name('client.dashboard');
 
-    Route::get('/client/subscription', [App\Http\Controllers\Client\SubscriptionController::class, 'index'])
+   Route::get('/client/subscription', [App\Http\Controllers\Client\SubscriptionController::class, 'index'])
     ->name('client.subscription');
+
+Route::post('/client/subscription/confirm', [App\Http\Controllers\Client\SubscriptionController::class, 'confirm'])
+    ->name('client.subscription.confirm');
 
 Route::post('/client/subscription', [App\Http\Controllers\Client\SubscriptionController::class, 'store'])
     ->name('client.subscription.store');

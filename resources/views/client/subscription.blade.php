@@ -22,13 +22,10 @@
     <div class="bfh-section-title">All packages</div>
 
     @foreach($memberships as $membership)
-        <form method="POST" action="{{ route('client.subscription.store') }}">
+        <form method="POST" action="{{ route('client.subscription.confirm') }}">
             @csrf
             <input type="hidden" name="membership_id" value="{{ $membership->id }}">
             <button type="submit"
-                @if($activeSubscription && $activeSubscription->membership_id != $membership->id)
-                    onclick="return confirm('You already have an active {{ addslashes($activeSubscription->membership->name) }} package. Are you sure you want to switch to {{ addslashes($membership->name) }}? Your current package will be cancelled.')"
-                @endif
                 style="width:100%;text-align:left;background:none;border:none;padding:0;cursor:pointer;margin-bottom:12px;display:block">
                 <div class="bfh-card {{ $activeSubscription && $activeSubscription->membership_id == $membership->id ? 'orange-border' : '' }}"
                     style="margin-bottom:0;display:flex;justify-content:space-between;align-items:center;transition:border-color 0.2s">

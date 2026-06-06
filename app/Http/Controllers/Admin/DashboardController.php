@@ -67,10 +67,13 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
-        $expiringSoon = Subscription::where('status', 'active')
-            ->whereBetween('end_date', [today(), today()->addDays(3)])
-            ->with(['user', 'membership'])
-            ->get();
+       $expiringSoon = Subscription::where('status', 'active')
+    ->whereBetween('end_date', [today(), today()->addDays(3)])
+    ->whereHas('membership', function ($q) {
+        $q->where('duration_days', '>', 7);
+    })
+    ->with(['user', 'membership'])
+    ->get();
 
         $clients = User::where('role', 'client')
             ->with(['subscriptions.membership', 'subscriptions.payment'])
