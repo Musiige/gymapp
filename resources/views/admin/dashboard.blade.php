@@ -182,10 +182,10 @@
                     <div>
                         <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Package</p>
                         <p style="color:#aaa;font-size:13px;font-weight:600;margin-top:2px">{{ $sub->membership->name }}</p>
-                    </div>
+                    </div>UGX {{ number_format($sub->custom_price ?? $sub->membership->price) }}
                     <div>
                         <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Total Due</p>
-                        <p style="color:#fff;font-size:13px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->membership->price) }}</p>
+                        <p style="color:#fff;font-size:13px;font-weight:600;margin-top:2px"></p>
                     </div>
                     <div>
                         <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Paid</p>
@@ -215,7 +215,7 @@
         </div>
     @else
         @foreach($clients as $client)
-            @php $sub = $client->subscriptions->last(); @endphp
+           @php $sub = $client->subscriptions->sortByDesc('created_at')->first(); @endphp
             <div class="bfh-card" style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
                 <div style="width:40px;height:40px;background:#2a2a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:13px;font-weight:700;flex-shrink:0">
                     {{ strtoupper(substr($client->name, 0, 2)) }}

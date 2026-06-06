@@ -19,10 +19,10 @@
         <div class="bfh-stat">
             <div class="bfh-stat-label">Total paid</div>
             <div class="bfh-stat-value" style="font-size:16px">{{ number_format($totalPaid) }}</div>
-            <div class="bfh-stat-sub">UGX</div>
+            <div class="bfh-stat-sub">UGX all time</div>
         </div>
         <div class="bfh-stat">
-            <div class="bfh-stat-label">Subscriptions</div>
+            <div class="bfh-stat-label">Packages</div>
             <div class="bfh-stat-value">{{ $client->subscriptions->count() }}</div>
             <div class="bfh-stat-sub">All time</div>
         </div>
@@ -46,30 +46,88 @@
                     <p style="color:#fff;font-size:14px;font-weight:600">{{ $sub->membership->name }}</p>
                     <span class="bfh-badge {{ $sub->status }}">{{ $sub->status }}</span>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
                     <div>
                         <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Total due</p>
-                        <p style="color:#fff;font-size:12px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->membership->price) }}</p>
+                        <p style="color:#fff;font-size:13px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->membership->price) }}</p>
                     </div>
                     <div>
                         <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Paid</p>
-                        <p style="color:#4caf50;font-size:12px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->payment->amount_paid ?? 0) }}</p>
+                        <p style="color:#4caf50;font-size:13px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->payment->amount_paid ?? 0) }}</p>
                     </div>
                     <div>
                         <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Balance</p>
-                        <p style="color:#FF6B00;font-size:12px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->payment->balance ?? $sub->membership->price) }}</p>
+                        <p style="color:#FF6B00;font-size:13px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->payment->balance ?? $sub->membership->price) }}</p>
                     </div>
                     <div>
-                        <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Payment method</p>
-                        <p style="color:#aaa;font-size:12px;font-weight:600;margin-top:2px;text-transform:capitalize">{{ $sub->payment->payment_method ?? '—' }}</p>
+                        <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Method</p>
+                        <p style="color:#aaa;font-size:13px;font-weight:600;margin-top:2px;text-transform:capitalize">{{ $sub->payment->payment_method ?? '—' }}</p>
                     </div>
                 </div>
-                <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid #222">
+
+                <div style="padding-top:10px;border-top:0.5px solid #222;margin-bottom:10px">
                     <p style="color:#555;font-size:11px">
                         {{ \Carbon\Carbon::parse($sub->start_date)->format('d M Y') }} →
                         {{ \Carbon\Carbon::parse($sub->end_date)->format('d M Y') }}
+                        @if($sub->payment && $sub->payment->marked_paid_by_admin)
+                            · <span style="color:#4a9eff">Recorded by admin</span>
+                        @endif
                     </p>
                 </div>
+
+                {{-- Custom price setter --}}
+@if(in_array($sub->status, ['active', 'pending']))
+    <div style="background:#0a0a0a;border-radius:10px;padding:12px;margin-bottom:8px">
+        <p style="color:#4a9eff;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">
+            Set agreed price (discount)
+        </p>
+        <form method="POST" action="{{ route('admin.subscription.set-price', $sub->id) }}">
+            @csrf
+            <div style="display:flex;gap:8px">
+                <input type="number" name="custom_price"
+                    placeholder="Custom amount (UGX)"
+                    value="{{ $sub->custom_price ?? $sub->membership->price }}"
+                    min="0"
+                    class="bfh-input" style="flex:1;padding:10px 12px">
+                <button type="submit" class="bfh-btn sm" style="width:auto;padding:10px 16px;white-space:nowrap;background:#1a2a3a;border:0.5px solid #4a9eff;color:#4a9eff">
+                    Set
+                </button>
+            </div>
+            <p style="color:#555;font-size:11px;margin-top:6px">
+                Default: UGX {{ number_format($sub->custom_price ?? $sub->membership->price) }}
+                @if($sub->custom_price)
+                    · <span style="color:#4a9eff">Discounted to UGX {{ number_format($sub->custom_price) }}</span>
+                @endif
+            </p>
+        </form>
+    </div>
+@endif
+
+                {{-- Cash payment form for active/pending with outstanding balance --}}
+                @if(in_array($sub->status, ['active', 'pending']) && (!$sub->payment || $sub->payment->status !== 'paid'))
+                    <div style="background:#0a0a0a;border-radius:10px;padding:12px;margin-top:4px">
+                        <p style="color:#FF6B00;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Record cash payment</p>
+                        <form method="POST" action="{{ route('admin.payment.mark', $sub->id) }}">
+                            @csrf
+                            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                                <input type="number" name="amount_paid"
+                                    placeholder="Amount (UGX)"
+                                    min="1"
+                                    value="{{ $sub->payment ? $sub->payment->balance : $sub->membership->price }}"
+                                    class="bfh-input" style="flex:1;min-width:120px;padding:10px 12px">
+                                <select name="payment_method" class="bfh-select" style="flex:1;min-width:100px;padding:10px 12px">
+                                    <option value="cash">Cash</option>
+                                    <option value="momo">MoMo</option>
+                                    <option value="airtel">Airtel</option>
+                                </select>
+                                <button type="submit" class="bfh-btn sm" style="width:auto;padding:10px 16px;white-space:nowrap">
+                                    Record
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                @endif
             </div>
         @endforeach
     @endif
@@ -114,9 +172,11 @@
                         {{ \Carbon\Carbon::parse($record->attended_at)->format('d M Y, h:i A') }}
                     </p>
                     @if($record->marked_by === 'client')
-                        <p style="color:#4caf50;font-size:11px;margin-top:2px">✓ Self check-in</p>
+                        <p style="color:#4caf50;font-size:11px;margin-top:2px">✓ Self check-in by client</p>
                     @else
-                        <p style="color:#FF6B00;font-size:11px;margin-top:2px">✓ Marked by {{ $record->trainer->name ?? 'Trainer' }}</p>
+                        <p style="color:#FF6B00;font-size:11px;margin-top:2px">
+                            ✓ Marked by {{ $record->trainer->name ?? 'Trainer' }}
+                        </p>
                     @endif
                 </div>
             </div>

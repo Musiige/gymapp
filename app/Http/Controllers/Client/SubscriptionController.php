@@ -54,45 +54,46 @@ class SubscriptionController extends Controller
         return $this->processStore($request->membership_id);
     }
 
-    private function processStore($membershipId)
-    {
-        $membership = Membership::findOrFail($membershipId);
+   private function processStore($membershipId)
+{
+    $membership = Membership::findOrFail($membershipId);
 
-        $activeSubscription = Subscription::where('user_id', Auth::id())
-            ->whereIn('status', ['active', 'pending'])
-            ->latest()
-            ->first();
+    $activeSubscription = Subscription::where('user_id', Auth::id())
+        ->whereNotIn('status', ['expired', 'changed'])
+        ->latest()
+        ->first();
 
-        if ($activeSubscription && $activeSubscription->membership_id != $membership->id) {
-            SubscriptionChange::create([
-                'user_id'           => Auth::id(),
-                'old_membership_id' => $activeSubscription->membership_id,
-                'new_membership_id' => $membership->id,
-                'changed_by'        => 'client',
-                'changed_at'        => now(),
-            ]);
-
-            Subscription::where('user_id', Auth::id())
-                ->whereIn('status', ['active', 'pending'])
-                ->update(['status' => 'expired']);
-        }
-
-        $startDate = Carbon::today();
-        $endDate   = $membership->duration_days === 1
-            ? Carbon::today()->endOfDay()
-            : Carbon::today()->addDays($membership->duration_days);
-
-        Subscription::create([
-            'user_id'       => Auth::id(),
-            'membership_id' => $membership->id,
-            'start_date'    => $startDate,
-            'end_date'      => $endDate,
-            'status'        => 'pending',
+    if ($activeSubscription && $activeSubscription->membership_id != $membership->id) {
+        SubscriptionChange::create([
+            'user_id'           => Auth::id(),
+            'old_membership_id' => $activeSubscription->membership_id,
+            'new_membership_id' => $membership->id,
+            'changed_by'        => 'client',
+            'changed_at'        => now(),
         ]);
-
-        return redirect()->route('client.dashboard')
-            ->with('success', 'Package selected successfully. Please complete your payment.');
     }
+
+    // Force mark all non-expired subscriptions as changed
+    Subscription::where('user_id', Auth::id())
+        ->whereNotIn('status', ['expired', 'changed'])
+        ->update(['status' => 'changed']);
+
+    $startDate = Carbon::today();
+    $endDate   = $membership->duration_days === 1
+        ? Carbon::today()->endOfDay()
+        : Carbon::today()->addDays($membership->duration_days);
+
+    Subscription::create([
+        'user_id'       => Auth::id(),
+        'membership_id' => $membership->id,
+        'start_date'    => $startDate,
+        'end_date'      => $endDate,
+        'status'        => 'pending',
+    ]);
+
+    return redirect()->route('client.dashboard')
+        ->with('success', 'Package selected successfully. Please complete your payment.');
+}
     public function checkin(Request $request)
 {
     $request->validate([

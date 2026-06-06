@@ -63,9 +63,15 @@ class DashboardController extends Controller
         $monthlyAttendance = Attendance::whereMonth('attended_at', now()->month)->count();
 
         // Subscriptions
-        $subscriptions = Subscription::with(['user', 'membership', 'payment'])
-            ->latest()
-            ->get();
+       // Get only the latest subscription per client
+$subscriptions = Subscription::with(['user', 'membership', 'payment'])
+    ->whereIn('id', function ($query) {
+        $query->selectRaw('MAX(id)')
+            ->from('subscriptions')
+            ->groupBy('user_id');
+    })
+    ->latest()
+    ->get();
 
        $expiringSoon = Subscription::where('status', 'active')
     ->whereBetween('end_date', [today(), today()->addDays(3)])
@@ -76,8 +82,10 @@ class DashboardController extends Controller
     ->get();
 
         $clients = User::where('role', 'client')
-            ->with(['subscriptions.membership', 'subscriptions.payment'])
-            ->get();
+    ->with(['subscriptions' => function ($q) {
+        $q->latest()->with(['membership', 'payment']);
+    }])
+    ->get();
 
         return view('admin.dashboard', compact(
             'totalClients',

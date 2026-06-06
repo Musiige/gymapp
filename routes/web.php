@@ -99,3 +99,9 @@ Route::get('/admin/clients/{id}', [App\Http\Controllers\Admin\ClientController::
 
     Route::post('/client/checkin', [App\Http\Controllers\Client\SubscriptionController::class, 'checkin'])
     ->name('client.checkin');
+
+    Route::post('/admin/payment/{subscription}/mark-paid', [App\Http\Controllers\Admin\PaymentController::class, 'markPaid'])
+    ->name('admin.payment.mark');
+
+    Route::post('/admin/subscription/{subscription}/set-price', [App\Http\Controllers\Admin\PaymentController::class, 'setCustomPrice'])
+    ->name('admin.subscription.set-price');

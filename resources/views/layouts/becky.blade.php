@@ -54,6 +54,7 @@
         .bfh-badge.active{background:#FF6B00;color:#fff}
         .bfh-badge.pending{background:transparent;color:#FF6B00;border:0.5px solid #FF6B00}
         .bfh-badge.expired{background:#2a2a2a;color:#666}
+        .bfh-badge.changed{background:#1a1a3a;color:#4a9eff}
         .bfh-badge.paid{background:#1a3a1a;color:#4caf50}
         .bfh-badge.half-paid{background:#3a2a0a;color:#FF6B00}
         .bfh-badge.unpaid{background:#3a1a1a;color:#ff4444}
