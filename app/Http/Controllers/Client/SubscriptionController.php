@@ -22,26 +22,30 @@ class SubscriptionController extends Controller
         return view('client.subscription', compact('memberships', 'activeSubscription'));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'membership_id' => ['required', 'exists:memberships,id'],
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'membership_id' => ['required', 'exists:memberships,id'],
+    ]);
 
-        $membership = Membership::findOrFail($request->membership_id);
+    $membership = Membership::findOrFail($request->membership_id);
 
-        $startDate = Carbon::today();
-        $endDate   = Carbon::today()->addDays($membership->duration_days);
+    // Cancel any existing active or pending subscriptions
+    Subscription::where('user_id', Auth::id())
+        ->whereIn('status', ['active', 'pending'])
+        ->update(['status' => 'expired']);
 
-        Subscription::create([
-            'user_id'       => Auth::id(),
-            'membership_id' => $membership->id,
-            'start_date'    => $startDate,
-            'end_date'      => $endDate,
-            'status'        => 'pending',
-        ]);
+    $startDate = Carbon::today();
+    $endDate   = Carbon::today()->addDays($membership->duration_days);
 
-        return redirect()->route('client.dashboard')
-            ->with('success', 'Package selected successfully. Please complete your payment.');
-    }
-}
+    Subscription::create([
+        'user_id'       => Auth::id(),
+        'membership_id' => $membership->id,
+        'start_date'    => $startDate,
+        'end_date'      => $endDate,
+        'status'        => 'pending',
+    ]);
+
+    return redirect()->route('client.dashboard')
+        ->with('success', 'Package selected successfully. Please complete your payment.');
+}}

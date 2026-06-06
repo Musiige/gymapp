@@ -163,26 +163,45 @@
     @else
         @foreach($subscriptions as $sub)
             <div class="bfh-card" style="margin-bottom:10px">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-                    <div>
-                        <p style="color:#fff;font-size:14px;font-weight:600">{{ $sub->user->name }}</p>
-                        <p style="color:#555;font-size:12px;margin-top:2px">{{ $sub->membership->name }}</p>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div style="width:36px;height:36px;background:#2a2a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:12px;font-weight:700;flex-shrink:0">
+                            {{ strtoupper(substr($sub->user->name, 0, 2)) }}
+                        </div>
+                        <div>
+                            <p style="color:#fff;font-size:14px;font-weight:600">{{ $sub->user->name }}</p>
+                            <p style="color:#555;font-size:11px">{{ $sub->user->phone }}</p>
+                        </div>
                     </div>
                     <span class="bfh-badge {{ $sub->status }}">{{ $sub->status }}</span>
                 </div>
-                <div style="display:flex;justify-content:space-between">
+
+                <div class="bfh-divider" style="margin:0 0 12px"></div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
                     <div>
-                        <p style="color:#666;font-size:11px">Paid</p>
-                        <p style="color:#4caf50;font-size:13px;font-weight:600">UGX {{ number_format($sub->payment->amount_paid ?? 0) }}</p>
+                        <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Package</p>
+                        <p style="color:#aaa;font-size:13px;font-weight:600;margin-top:2px">{{ $sub->membership->name }}</p>
                     </div>
-                    <div style="text-align:center">
-                        <p style="color:#666;font-size:11px">Balance</p>
-                        <p style="color:#FF6B00;font-size:13px;font-weight:600">UGX {{ number_format($sub->payment->balance ?? $sub->membership->price) }}</p>
+                    <div>
+                        <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Total Due</p>
+                        <p style="color:#fff;font-size:13px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->membership->price) }}</p>
                     </div>
-                    <div style="text-align:right">
-                        <p style="color:#666;font-size:11px">Expires</p>
-                        <p style="color:#aaa;font-size:12px">{{ \Carbon\Carbon::parse($sub->end_date)->format('d M Y') }}</p>
+                    <div>
+                        <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Paid</p>
+                        <p style="color:#4caf50;font-size:13px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->payment->amount_paid ?? 0) }}</p>
                     </div>
+                    <div>
+                        <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Balance</p>
+                        <p style="color:#FF6B00;font-size:13px;font-weight:600;margin-top:2px">UGX {{ number_format($sub->payment->balance ?? $sub->membership->price) }}</p>
+                    </div>
+                </div>
+
+                <div style="margin-top:10px;padding-top:10px;border-top:0.5px solid #222">
+                    <p style="color:#555;font-size:11px">
+                        Expires {{ \Carbon\Carbon::parse($sub->end_date)->format('d M Y') }} ·
+                        Started {{ \Carbon\Carbon::parse($sub->start_date)->format('d M Y') }}
+                    </p>
                 </div>
             </div>
         @endforeach

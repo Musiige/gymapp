@@ -98,6 +98,37 @@
             .bfh-topbar{padding:14px 40px}
             .bfh-content{padding:32px 24px 110px}
         }
+
+        /* Light mode */
+body.light{background:#f5f5f5;color:#111}
+body.light .bfh-topbar{background:#fff;border-bottom:0.5px solid #e0e0e0}
+body.light .bfh-logo-sub{color:#999}
+body.light .bfh-avatar{background:#f0f0f0;border-color:#e0e0e0}
+body.light .bfh-content{background:#f5f5f5}
+body.light .bfh-card{background:#fff;border-color:#e8e8e8}
+body.light .bfh-card.orange-border{border-color:#FF6B00}
+body.light .bfh-stat{background:#fff;border-color:#e8e8e8}
+body.light .bfh-stat-label{color:#999}
+body.light .bfh-stat-sub{color:#aaa}
+body.light .bfh-section-title{color:#999}
+body.light .bfh-nav{background:#fff;border-top:0.5px solid #e8e8e8}
+body.light .bfh-nav a{color:#bbb}
+body.light .bfh-nav a.active{color:#FF6B00}
+body.light .bfh-input{background:#f8f8f8;border-color:#e0e0e0;color:#111}
+body.light .bfh-input::placeholder{color:#bbb}
+body.light .bfh-select{background:#f8f8f8;border-color:#e0e0e0;color:#111}
+body.light .bfh-form-label{color:#999}
+body.light .bfh-icon-box{background:#f0f0f0;border-color:#e0e0e0}
+body.light .bfh-progress-bar{background:#e8e8e8}
+body.light .bfh-divider{background:#e8e8e8}
+body.light .bfh-table th{color:#999;border-color:#e8e8e8}
+body.light .bfh-table td{border-color:#f0f0f0;color:#555}
+body.light .bfh-alert-success{background:#f0fff0;border-color:#c3e6c3;color:#2e7d32}
+body.light .bfh-alert-error{background:#fff0f0;border-color:#e6c3c3;color:#c62828}
+body.light .bfh-badge.expired{background:#f0f0f0;color:#999}
+body.light .bfh-btn.grey-btn{background:#f0f0f0;border-color:#e0e0e0;color:#666}
+body.light .bfh-btn.danger{background:#fff0f0;border-color:#ffcccc;color:#c62828}
+body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
     </style>
 </head>
 <body>
@@ -109,12 +140,15 @@
         <div class="bfh-logo-sub">Fitness Hub</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
-        <div class="bfh-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}</div>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:'Figtree',sans-serif">Logout</button>
-        </form>
-    </div>
+    <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:0.5px solid #333;border-radius:20px;padding:5px 12px;color:#888;font-size:11px;cursor:pointer;font-family:'Figtree',sans-serif;letter-spacing:1px">
+        🌙 Dark
+    </button>
+    <div class="bfh-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}</div>
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:'Figtree',sans-serif">Logout</button>
+    </form>
+</div>
 </div>
 @endauth
 
@@ -252,6 +286,40 @@
 </script>
 @endif
 @endauth
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        const btn = document.getElementById('theme-btn');
+        if (body.classList.contains('light')) {
+            body.classList.remove('light');
+            localStorage.setItem('theme', 'dark');
+            btn.textContent = '🌙 Dark';
+            btn.style.borderColor = '#333';
+            btn.style.color = '#888';
+        } else {
+            body.classList.add('light');
+            localStorage.setItem('theme', 'light');
+            btn.textContent = '☀️ Light';
+            btn.style.borderColor = '#e0e0e0';
+            btn.style.color = '#666';
+        }
+    }
+
+    // Apply saved theme on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const saved = localStorage.getItem('theme');
+        const btn = document.getElementById('theme-btn');
+        if (saved === 'light') {
+            document.body.classList.add('light');
+            if (btn) {
+                btn.textContent = '☀️ Light';
+                btn.style.borderColor = '#e0e0e0';
+                btn.style.color = '#666';
+            }
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -25,15 +25,19 @@
         <form method="POST" action="{{ route('client.subscription.store') }}">
             @csrf
             <input type="hidden" name="membership_id" value="{{ $membership->id }}">
-            <button type="submit" style="width:100%;text-align:left;background:none;border:none;padding:0;cursor:pointer;margin-bottom:12px;display:block">
+            <button type="submit"
+                @if($activeSubscription && $activeSubscription->membership_id != $membership->id)
+                    onclick="return confirm('You already have an active {{ addslashes($activeSubscription->membership->name) }} package. Are you sure you want to switch to {{ addslashes($membership->name) }}? Your current package will be cancelled.')"
+                @endif
+                style="width:100%;text-align:left;background:none;border:none;padding:0;cursor:pointer;margin-bottom:12px;display:block">
                 <div class="bfh-card {{ $activeSubscription && $activeSubscription->membership_id == $membership->id ? 'orange-border' : '' }}"
-                    style="margin-bottom:0;transition:border-color 0.2s;display:flex;justify-content:space-between;align-items:center">
-                    <div>
+                    style="margin-bottom:0;display:flex;justify-content:space-between;align-items:center;transition:border-color 0.2s">
+                    <div style="flex:1;min-width:0">
                         <p style="color:#fff;font-size:15px;font-weight:600">{{ $membership->name }}</p>
                         <p style="color:#777;font-size:12px;margin-top:4px">{{ $membership->description }}</p>
                         <p style="color:#555;font-size:11px;margin-top:4px">{{ $membership->duration_days }} day(s)</p>
                     </div>
-                    <div style="text-align:right;flex-shrink:0;margin-left:12px">
+                    <div style="text-align:right;flex-shrink:0;margin-left:16px">
                         <p style="color:#FF6B00;font-size:18px;font-weight:700">UGX {{ number_format($membership->price) }}</p>
                         @if($activeSubscription && $activeSubscription->membership_id == $membership->id)
                             <span class="bfh-badge active" style="margin-top:6px;display:inline-block">Current</span>
