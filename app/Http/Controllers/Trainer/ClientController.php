@@ -4,17 +4,24 @@ namespace App\Http\Controllers\Trainer;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->get('search');
+
         $clients = User::where('role', 'client')
-            ->with(['subscriptions.membership' => function ($query) {
-                $query->latest();
-            }])
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->with(['subscriptions.membership'])
             ->get();
 
-        return view('trainer.clients', compact('clients'));
+        return view('trainer.clients', compact('clients', 'search'));
     }
 }

@@ -39,12 +39,23 @@ class AttendanceController extends Controller
             return back()->with('error', 'Attendance already marked for this client in this session today.');
         }
 
-        Attendance::create([
-            'user_id'      => $request->client_id,
-            'trainer_id'   => Auth::id(),
-            'session_slot' => $request->session_slot,
-            'attended_at'  => now(),
-        ]);
+        $alreadySelf = Attendance::where('user_id', $request->client_id)
+    ->where('session_slot', $request->session_slot)
+    ->whereDate('attended_at', today())
+    ->where('marked_by', 'client')
+    ->first();
+
+if ($alreadySelf) {
+    return back()->with('error', 'This client already checked in themselves for this session.');
+}
+
+      Attendance::create([
+    'user_id'      => $request->client_id,
+    'trainer_id'   => Auth::id(),
+    'session_slot' => $request->session_slot,
+    'attended_at'  => now(),
+    'marked_by'    => 'trainer',
+]);
 
         return back()->with('success', 'Attendance marked successfully.');
     }

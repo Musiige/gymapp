@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model
 {
-
-protected $table = 'attendance';
+    protected $table = 'attendance';
 
     protected $fillable = [
         'user_id',
         'trainer_id',
         'session_slot',
         'attended_at',
+        'marked_by',
     ];
 
     public function client()

@@ -90,3 +90,12 @@ Route::post('/client/profile', [App\Http\Controllers\Client\ProfileController::c
     ->name('client.profile.update');
 
 require __DIR__.'/auth.php';
+
+Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])
+    ->name('admin.clients');
+
+Route::get('/admin/clients/{id}', [App\Http\Controllers\Admin\ClientController::class, 'show'])
+    ->name('admin.clients.show');
+
+    Route::post('/client/checkin', [App\Http\Controllers\Client\SubscriptionController::class, 'checkin'])
+    ->name('client.checkin');

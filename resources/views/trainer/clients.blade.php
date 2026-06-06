@@ -5,6 +5,18 @@
         <p style="color:#777;font-size:13px;margin-top:4px">{{ $clients->count() }} registered client(s)</p>
     </div>
 
+<form method="GET" action="{{ route('trainer.clients') }}" style="margin-bottom:20px">
+    <div style="position:relative">
+        <input type="text" name="search" value="{{ $search ?? '' }}"
+            placeholder="Search by name or phone..."
+            class="bfh-input" style="padding-left:40px">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#555;font-size:16px">🔍</span>
+        @if($search)
+            <a href="{{ route('trainer.clients') }}" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#FF6B00;font-size:12px;text-decoration:none">Clear ✕</a>
+        @endif
+    </div>
+</form>
+
     @if($clients->isEmpty())
         <div class="bfh-card" style="text-align:center;padding:32px">
             <p style="font-size:32px;margin-bottom:12px">👥</p>

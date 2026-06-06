@@ -93,4 +93,37 @@ class SubscriptionController extends Controller
         return redirect()->route('client.dashboard')
             ->with('success', 'Package selected successfully. Please complete your payment.');
     }
+    public function checkin(Request $request)
+{
+    $request->validate([
+        'session_slot' => ['required', 'in:morning,midday,evening'],
+    ]);
+
+    $activeSubscription = Subscription::where('user_id', Auth::id())
+        ->where('status', 'active')
+        ->first();
+
+    if (!$activeSubscription) {
+        return back()->with('error', 'You need an active membership to check in.');
+    }
+
+    $already = \App\Models\Attendance::where('user_id', Auth::id())
+        ->where('session_slot', $request->session_slot)
+        ->whereDate('attended_at', today())
+        ->first();
+
+    if ($already) {
+        return back()->with('error', 'You have already checked in for this session today.');
+    }
+
+    \App\Models\Attendance::create([
+        'user_id'      => Auth::id(),
+        'trainer_id'   => Auth::id(),
+        'session_slot' => $request->session_slot,
+        'attended_at'  => now(),
+        'marked_by'    => 'client',
+    ]);
+
+    return back()->with('success', 'Check-in successful. Welcome to your session! 💪');
+}
 }

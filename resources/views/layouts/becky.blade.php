@@ -11,43 +11,29 @@
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
         body{background:#141414;color:#fff;font-family:'Figtree',sans-serif;min-height:100vh}
-
-        /* topbar */
         .bfh-topbar{background:#0a0a0a;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid #2a2a2a;position:sticky;top:0;z-index:100}
         .bfh-logo-main{color:#FF6B00;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;line-height:1}
         .bfh-logo-sub{color:#777;font-size:8px;letter-spacing:3px;text-transform:uppercase;margin-top:2px}
         .bfh-avatar{width:36px;height:36px;background:#1e1e1e;border:0.5px solid #3a3a3a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:12px;font-weight:700;flex-shrink:0}
-
-        /* content */
         .bfh-content{padding:24px 20px 110px;max-width:100%;margin:0 auto;width:100%}
-@media(min-width:640px){.bfh-content{max-width:600px;padding:32px 32px 110px}}
-@media(min-width:1024px){.bfh-content{max-width:780px;padding:40px 40px 110px}}
-@media(min-width:1280px){.bfh-content{max-width:960px;padding:40px 40px 110px}}
-
-        /* bottom nav */
-        .bfh-nav{position:fixed;bottom:0;left:0;right:0;width:100%;background:#0a0a0a;border-top:0.5px solid #1e1e1e;display:flex;justify-content:space-around;padding:10px 0 16px;z-index:100;}
+        @media(min-width:640px){.bfh-content{max-width:600px;padding:32px 32px 110px}}
+        @media(min-width:1024px){.bfh-content{max-width:780px;padding:40px 40px 110px}}
+        @media(min-width:1280px){.bfh-content{max-width:960px;padding:40px 40px 110px}}
+        .bfh-nav{position:fixed;bottom:0;left:0;right:0;width:100%;background:#0a0a0a;border-top:0.5px solid #1e1e1e;display:flex;justify-content:space-around;padding:10px 0 16px;z-index:100}
         .bfh-nav a{display:flex;flex-direction:column;align-items:center;gap:4px;color:#444;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;text-decoration:none;transition:color 0.2s}
         .bfh-nav a.active{color:#FF6B00}
         .bfh-nav a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-
-        /* cards */
         .bfh-card{background:#1e1e1e;border:0.5px solid #2e2e2e;border-radius:14px;padding:16px;margin-bottom:14px}
         .bfh-card.orange-border{border-color:#FF6B00}
         .bfh-card.grey-border{border-color:#3a3a3a}
-
-        /* typography */
         .bfh-section-title{color:#666;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;margin-top:4px}
         .bfh-label{color:#666;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
-
-        /* stat grid */
         .bfh-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
         .bfh-stat{background:#1e1e1e;border:0.5px solid #2e2e2e;border-radius:12px;padding:14px}
         .bfh-stat-label{color:#777;font-size:11px;text-transform:uppercase;letter-spacing:1px}
         .bfh-stat-value{color:#FF6B00;font-size:22px;font-weight:700;margin-top:4px}
         .bfh-stat-value.grey{color:#aaa}
         .bfh-stat-sub{color:#555;font-size:11px;margin-top:2px}
-
-        /* buttons */
         .bfh-btn{background:#FF6B00;color:#fff;border:none;border-radius:12px;padding:14px;width:100%;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:block;text-align:center;text-decoration:none;transition:background 0.2s}
         .bfh-btn:hover{background:#e05f00;color:#fff}
         .bfh-btn.outline{background:transparent;border:0.5px solid #FF6B00;color:#FF6B00}
@@ -55,8 +41,6 @@
         .bfh-btn.grey-btn{background:#1e1e1e;border:0.5px solid #2e2e2e;color:#888}
         .bfh-btn.danger{background:#3a1a1a;border:0.5px solid #5a2a2a;color:#ff4444}
         .bfh-btn.sm{padding:10px 14px;font-size:12px}
-
-        /* inputs */
         .bfh-input{background:#1e1e1e;border:0.5px solid #2e2e2e;border-radius:10px;padding:13px 14px;width:100%;color:#fff;font-size:14px;outline:none;transition:border-color 0.2s;font-family:'Figtree',sans-serif}
         .bfh-input:focus{border-color:#FF6B00}
         .bfh-input::placeholder{color:#555}
@@ -66,8 +50,6 @@
         .bfh-form-group{margin-bottom:16px}
         .bfh-form-label{color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block}
         .bfh-error{color:#ff4444;font-size:12px;margin-top:4px}
-
-        /* badges */
         .bfh-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px}
         .bfh-badge.active{background:#FF6B00;color:#fff}
         .bfh-badge.pending{background:transparent;color:#FF6B00;border:0.5px solid #FF6B00}
@@ -78,8 +60,6 @@
         .bfh-badge.client{background:#1e1e1e;color:#aaa;border:0.5px solid #3a3a3a}
         .bfh-badge.trainer{background:#1a2a3a;color:#4a9eff}
         .bfh-badge.admin{background:#2a1a3a;color:#9a4aff}
-
-        /* misc */
         .bfh-progress-bar{background:#2a2a2a;border-radius:4px;height:4px;margin-top:10px}
         .bfh-progress-fill{background:#FF6B00;height:4px;border-radius:4px}
         .bfh-divider{height:0.5px;background:#222;margin:16px 0}
@@ -92,43 +72,49 @@
         .bfh-table td{padding:10px 0;border-bottom:0.5px solid #1e1e1e;color:#ccc;vertical-align:middle}
         .bfh-table tr:last-child td{border-bottom:none}
         .bfh-icon-box{width:40px;height:40px;background:#2a2a2a;border:0.5px solid #3a3a3a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:15px;font-weight:700;flex-shrink:0}
-
-        /* desktop */
-        @media(min-width:768px){
-            .bfh-topbar{padding:14px 40px}
-            .bfh-content{padding:32px 24px 110px}
-        }
+        @media(min-width:768px){.bfh-topbar{padding:14px 40px}.bfh-content{padding:32px 24px 110px}}
 
         /* Light mode */
-body.light{background:#f5f5f5;color:#111}
-body.light .bfh-topbar{background:#fff;border-bottom:0.5px solid #e0e0e0}
-body.light .bfh-logo-sub{color:#999}
-body.light .bfh-avatar{background:#f0f0f0;border-color:#e0e0e0}
-body.light .bfh-content{background:#f5f5f5}
-body.light .bfh-card{background:#fff;border-color:#e8e8e8}
-body.light .bfh-card.orange-border{border-color:#FF6B00}
-body.light .bfh-stat{background:#fff;border-color:#e8e8e8}
-body.light .bfh-stat-label{color:#999}
-body.light .bfh-stat-sub{color:#aaa}
-body.light .bfh-section-title{color:#999}
-body.light .bfh-nav{background:#fff;border-top:0.5px solid #e8e8e8}
-body.light .bfh-nav a{color:#bbb}
-body.light .bfh-nav a.active{color:#FF6B00}
-body.light .bfh-input{background:#f8f8f8;border-color:#e0e0e0;color:#111}
-body.light .bfh-input::placeholder{color:#bbb}
-body.light .bfh-select{background:#f8f8f8;border-color:#e0e0e0;color:#111}
-body.light .bfh-form-label{color:#999}
-body.light .bfh-icon-box{background:#f0f0f0;border-color:#e0e0e0}
-body.light .bfh-progress-bar{background:#e8e8e8}
-body.light .bfh-divider{background:#e8e8e8}
-body.light .bfh-table th{color:#999;border-color:#e8e8e8}
-body.light .bfh-table td{border-color:#f0f0f0;color:#555}
-body.light .bfh-alert-success{background:#f0fff0;border-color:#c3e6c3;color:#2e7d32}
-body.light .bfh-alert-error{background:#fff0f0;border-color:#e6c3c3;color:#c62828}
-body.light .bfh-badge.expired{background:#f0f0f0;color:#999}
-body.light .bfh-btn.grey-btn{background:#f0f0f0;border-color:#e0e0e0;color:#666}
-body.light .bfh-btn.danger{background:#fff0f0;border-color:#ffcccc;color:#c62828}
-body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
+        body.light{background:#f5f5f5;color:#111}
+        body.light .bfh-topbar{background:#fff;border-bottom:0.5px solid #e0e0e0}
+        body.light .bfh-logo-sub{color:#999}
+        body.light .bfh-avatar{background:#f0f0f0;border-color:#e0e0e0}
+        body.light .bfh-content{background:#f5f5f5}
+        body.light .bfh-card{background:#fff;border-color:#e8e8e8}
+        body.light .bfh-card.orange-border{border-color:#FF6B00}
+        body.light .bfh-stat{background:#fff;border-color:#e8e8e8}
+        body.light .bfh-stat-label{color:#999}
+        body.light .bfh-stat-sub{color:#aaa}
+        body.light .bfh-section-title{color:#999}
+        body.light .bfh-nav{background:#fff;border-top:0.5px solid #e8e8e8}
+        body.light .bfh-nav a{color:#bbb}
+        body.light .bfh-nav a.active{color:#FF6B00}
+        body.light .bfh-input{background:#f8f8f8;border-color:#e0e0e0;color:#111}
+        body.light .bfh-input::placeholder{color:#bbb}
+        body.light .bfh-select{background:#f8f8f8;border-color:#e0e0e0;color:#111}
+        body.light .bfh-form-label{color:#999}
+        body.light .bfh-icon-box{background:#f0f0f0;border-color:#e0e0e0;color:#FF6B00}
+        body.light .bfh-progress-bar{background:#e8e8e8}
+        body.light .bfh-divider{background:#e8e8e8}
+        body.light .bfh-table th{color:#999;border-color:#e8e8e8}
+        body.light .bfh-table td{border-color:#f0f0f0;color:#444}
+        body.light .bfh-alert-success{background:#f0fff0;border-color:#c3e6c3;color:#2e7d32}
+        body.light .bfh-alert-error{background:#fff0f0;border-color:#e6c3c3;color:#c62828}
+        body.light .bfh-badge.expired{background:#f0f0f0;color:#999}
+        body.light .bfh-btn.grey-btn{background:#f0f0f0;border-color:#e0e0e0;color:#666}
+        body.light .bfh-btn.danger{background:#fff0f0;border-color:#ffcccc;color:#c62828}
+        body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
+        body.light .bfh-stat-value{color:#FF6B00}
+        body.light p[style*="color:#fff"]{color:#111 !important}
+        body.light p[style*="color:#aaa"]{color:#666 !important}
+        body.light p[style*="color:#555"]{color:#888 !important}
+        body.light p[style*="color:#777"]{color:#999 !important}
+        body.light h2[style*="color:#fff"]{color:#111 !important}
+        body.light .bfh-nav a{color:#ccc}
+        body.light div[style*="background:#2a2a2a"]{background:#f0f0f0 !important}
+        body.light div[style*="background:#1e1e1e"]{background:#fff !important}
+        body.light div[style*="background:#3a1a0a"]{background:#fff3e0 !important;border-color:#FF6B00}
+        body.light span[style*="background:#2a2a2a"]{background:#f0f0f0 !important;color:#666 !important}
     </style>
 </head>
 <body>
@@ -140,15 +126,15 @@ body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
         <div class="bfh-logo-sub">Fitness Hub</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
-    <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:0.5px solid #333;border-radius:20px;padding:5px 12px;color:#888;font-size:11px;cursor:pointer;font-family:'Figtree',sans-serif;letter-spacing:1px">
-        🌙 Dark
-    </button>
-    <div class="bfh-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}</div>
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:'Figtree',sans-serif">Logout</button>
-    </form>
-</div>
+        <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:0.5px solid #333;border-radius:20px;padding:5px 12px;color:#888;font-size:11px;cursor:pointer;font-family:'Figtree',sans-serif;letter-spacing:1px">
+            🌙 Dark
+        </button>
+        <div class="bfh-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}</div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:'Figtree',sans-serif">Logout</button>
+        </form>
+    </div>
 </div>
 @endauth
 
@@ -186,13 +172,13 @@ body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
         <span>Plans</span>
     </a>
     @php
-    $activeSubForNav = \App\Models\Subscription::where('user_id', Auth::id())
-        ->whereIn('status', ['active', 'pending'])
-        ->latest()
-        ->first();
-@endphp
-<a href="{{ $activeSubForNav ? route('client.payment', $activeSubForNav->id) : route('client.subscription') }}"
-    class="{{ request()->routeIs('client.payment*') ? 'active' : '' }}">
+        $activeSubForNav = \App\Models\Subscription::where('user_id', Auth::id())
+            ->whereIn('status', ['active', 'pending'])
+            ->latest()
+            ->first();
+    @endphp
+    <a href="{{ $activeSubForNav ? route('client.payment', $activeSubForNav->id) : route('client.subscription') }}"
+        class="{{ request()->routeIs('client.payment*') ? 'active' : '' }}">
         <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
         <span>Pay</span>
     </a>
@@ -228,11 +214,16 @@ body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         <span>Dashboard</span>
     </a>
+    <a href="{{ route('admin.clients') }}" class="{{ request()->routeIs('admin.clients*') ? 'active' : '' }}">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Clients</span>
+    </a>
     <a href="{{ route('admin.announcements') }}" class="{{ request()->routeIs('admin.announcements') ? 'active' : '' }}">
         <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
         <span>Announce</span>
     </a>
 </nav>
+
 @endif
 @endauth
 
@@ -306,7 +297,6 @@ body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
         }
     }
 
-    // Apply saved theme on load
     document.addEventListener('DOMContentLoaded', function() {
         const saved = localStorage.getItem('theme');
         const btn = document.getElementById('theme-btn');

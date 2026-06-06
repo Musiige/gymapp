@@ -79,6 +79,51 @@
         </div>
     @endif
 
+    {{-- Check in --}}
+@php
+    $currentHour = now()->hour;
+    $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
+        : ($currentHour >= 8 && $currentHour < 15 ? 'midday'
+        : ($currentHour >= 15 && $currentHour < 21 ? 'evening' : null));
+
+    $alreadyCheckedIn = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
+        ->where('session_slot', $currentSession)
+        ->whereDate('attended_at', today())
+        ->exists() : false;
+@endphp
+
+<div class="bfh-section-title" style="margin-top:8px">Check in</div>
+
+@if($subscription && $subscription->status === 'active')
+    @if($currentSession)
+        @if($alreadyCheckedIn)
+            <div class="bfh-card" style="text-align:center;padding:20px">
+                <p style="font-size:28px;margin-bottom:8px">✅</p>
+                <p style="color:#4caf50;font-size:15px;font-weight:600">Already checked in</p>
+                <p style="color:#555;font-size:12px;margin-top:4px;text-transform:capitalize">{{ $currentSession }} session</p>
+            </div>
+        @else
+            <form method="POST" action="{{ route('client.checkin') }}">
+                @csrf
+                <input type="hidden" name="session_slot" value="{{ $currentSession }}">
+                <button type="submit" class="bfh-btn" style="margin-bottom:14px;font-size:16px;padding:18px">
+                    ✊ Check in — {{ ucfirst($currentSession) }} session
+                </button>
+            </form>
+        @endif
+    @else
+        <div class="bfh-card" style="text-align:center;padding:20px">
+            <p style="color:#555;font-size:13px">No active session right now.</p>
+            <p style="color:#444;font-size:12px;margin-top:4px">Sessions: 5:30–8am · 8am–3:30pm · 3:30–9pm</p>
+        </div>
+    @endif
+@else
+    <div class="bfh-card" style="text-align:center;padding:20px">
+        <p style="color:#555;font-size:13px">You need an active membership to check in.</p>
+        <a href="{{ route('client.subscription') }}" style="color:#FF6B00;font-size:13px;margin-top:8px;display:block">Choose a package →</a>
+    </div>
+@endif
+
     <div class="bfh-section-title" style="margin-top:8px">My workouts</div>
 
     @if($workouts->isEmpty())
