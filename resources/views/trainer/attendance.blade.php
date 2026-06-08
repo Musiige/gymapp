@@ -11,12 +11,16 @@
             @csrf
             <div class="bfh-form-group">
                 <label class="bfh-form-label">Client</label>
-                <select name="client_id" class="bfh-select">
-                    <option value="">Select client</option>
-                    @foreach($clients as $client)
-                        <option value="{{ $client->id }}">{{ $client->name }}</option>
-                    @endforeach
-                </select>
+                <input type="text"
+    placeholder="Search client..."
+    oninput="filterSelect(this, 'attendance-client-select')"
+    class="bfh-input" style="margin-bottom:6px">
+<select name="client_id" id="attendance-client-select" class="bfh-select">
+    <option value="">Select client</option>
+    @foreach($clients as $client)
+        <option value="{{ $client->id }}">{{ $client->name }} — {{ $client->phone }}</option>
+    @endforeach
+</select>
                 @error('client_id')<p class="bfh-error">{{ $message }}</p>@enderror
             </div>
             <div class="bfh-form-group" style="margin-bottom:0">

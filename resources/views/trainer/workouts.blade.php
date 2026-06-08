@@ -65,16 +65,31 @@
                 <form method="POST" action="{{ route('trainer.workouts.assign') }}" style="display:flex;gap:8px">
                     @csrf
                     <input type="hidden" name="workout_id" value="{{ $workout->id }}">
-                    <select name="client_id" class="bfh-select" style="flex:1;padding:10px 12px">
-                        <option value="">Assign to client</option>
-                        @foreach($clients as $client)
-                            <option value="{{ $client->id }}">{{ $client->name }}</option>
-                        @endforeach
-                    </select>
+                    <div style="flex:1;position:relative">
+    <input type="text"
+        placeholder="Search client..."
+        oninput="filterSelect(this, 'select-{{ $workout->id }}')"
+        class="bfh-input" style="padding:10px 12px;margin-bottom:6px">
+    <select name="client_id" id="select-{{ $workout->id }}" class="bfh-select" style="padding:10px 12px">
+        <option value="">Select client</option>
+        @foreach($clients as $client)
+            <option value="{{ $client->id }}">{{ $client->name }} — {{ $client->phone }}</option>
+        @endforeach
+    </select>
+</div>
                     <button type="submit" class="bfh-btn sm" style="width:auto;padding:10px 16px;white-space:nowrap">Assign</button>
                 </form>
             </div>
         @endforeach
     @endif
-
+<script>
+    function filterSelect(input, selectId) {
+        const select = document.getElementById(selectId);
+        const filter = input.value.toLowerCase();
+        Array.from(select.options).forEach(option => {
+            if (option.value === '') return;
+            option.style.display = option.text.toLowerCase().includes(filter) ? '' : 'none';
+        });
+    }
+</script>
 </x-becky-layout>

@@ -22,4 +22,14 @@ class Announcement extends Model
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
+
+    public function reads()
+    {
+        return $this->hasMany(AnnouncementRead::class);
+    }
+
+    public function isReadBy($userId)
+    {
+        return $this->reads()->where('user_id', $userId)->exists();
+    }
 }

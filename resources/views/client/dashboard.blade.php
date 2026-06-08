@@ -1,21 +1,48 @@
 <x-becky-layout>
-    @php
-       $subscription = \App\Models\Subscription::where('user_id', Auth::id())
-    ->whereIn('status', ['active', 'pending'])
-    ->where('end_date', '>=', now())
-    ->with(['membership', 'payment'])
-    ->latest()
-    ->first();
+  @php
+    $subscription = \App\Models\Subscription::where('user_id', Auth::id())
+        ->where(function ($q) {
+            $q->where('status', 'active')
+              ->orWhere(function ($q) {
+                  $q->where('status', 'pending')
+                    ->where('end_date', '>=', now());
+              });
+        })
+        ->with(['membership', 'payment'])
+        ->latest()
+        ->first();
 
-        $workouts = \App\Models\WorkoutAssignment::where('client_id', Auth::id())
-            ->with('workout.trainer')
-            ->latest()
-            ->get();
+    // Auto-activate subscription if payment is complete
+    if ($subscription && $subscription->payment && $subscription->payment->balance == 0 && $subscription->status === 'pending') {
+        $subscription->update(['status' => 'active']);
+        $subscription->refresh();
+    }
 
-        $attendanceCount = \App\Models\Attendance::where('user_id', Auth::id())
-            ->whereMonth('attended_at', now()->month)
-            ->count();
-    @endphp
+    $workouts = \App\Models\WorkoutAssignment::where('client_id', Auth::id())
+        ->with('workout.trainer')
+        ->latest()
+        ->get();
+
+    $attendanceCount = \App\Models\Attendance::where('user_id', Auth::id())
+        ->whereMonth('attended_at', now()->month)
+        ->count();
+
+    $currentHour = now()->hour;
+    $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
+        : ($currentHour >= 8 && $currentHour < 16 ? 'midday'
+        : ($currentHour >= 16 && $currentHour < 22 ? 'evening' : 'midday'));
+
+    $alreadyCheckedIn = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
+        ->where('session_slot', $currentSession)
+        ->whereDate('attended_at', today())
+        ->exists() : false;
+
+    $trainerMarked = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
+        ->where('session_slot', $currentSession)
+        ->whereDate('attended_at', today())
+        ->where('marked_by', 'trainer')
+        ->exists() : false;
+@endphp
 
     <div style="margin-bottom:24px">
         <p style="color:#777;font-size:13px">Good {{ now()->hour < 12 ? 'morning' : (now()->hour < 17 ? 'afternoon' : 'evening') }} 💪</p>

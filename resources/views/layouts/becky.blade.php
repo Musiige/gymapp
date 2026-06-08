@@ -218,10 +218,21 @@ body.light *[style*="background:#2a2a2a;border-radius:50%"]{background:#e8e8e8 !
         <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
         <span>Pay</span>
     </a>
-    <a href="{{ route('client.inbox') }}" class="{{ request()->routeIs('client.inbox') ? 'active' : '' }}">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span>Inbox</span>
-    </a>
+   @php
+    $unreadCount = Auth::check() && Auth::user()->role === 'client'
+        ? \App\Http\Controllers\Client\InboxController::unreadCount()
+        : 0;
+@endphp
+<a href="{{ route('client.inbox') }}" class="{{ request()->routeIs('client.inbox') ? 'active' : '' }}"
+    style="position:relative">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    @if($unreadCount > 0)
+        <span style="position:absolute;top:-4px;right:-2px;background:#FF6B00;color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1">
+            {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+        </span>
+    @endif
+    <span>Inbox</span>
+</a>
     <a href="{{ route('client.profile') }}" class="{{ request()->routeIs('client.profile') ? 'active' : '' }}">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Profile</span>
