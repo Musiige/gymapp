@@ -79,30 +79,33 @@
 
     {{-- Today's attendance --}}
     @php
-        $todayAttendance = \App\Models\Attendance::where('trainer_id', Auth::id())
-            ->whereDate('attended_at', today())
-            ->with('client')
-            ->latest('attended_at')
-            ->get();
+       $clientIds = \App\Models\User::where('role', 'client')->pluck('id');
+$todayAttendance = \App\Models\Attendance::whereIn('user_id', $clientIds)
+    ->whereDate('attended_at', today())
+    ->with('client')
+    ->latest('attended_at')
+    ->get();
     @endphp
 
     @if($todayAttendance->isNotEmpty())
         <div class="bfh-section-title" style="margin-top:8px">Today's check-ins</div>
         @foreach($todayAttendance as $record)
-            <div class="bfh-card" style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-                <div style="width:38px;height:38px;background:#2a2a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:12px;font-weight:700;flex-shrink:0">
-                    {{ strtoupper(substr($record->client->name, 0, 2)) }}
-                </div>
-                <div style="flex:1">
-                    <p style="color:#fff;font-size:13px;font-weight:500">{{ $record->client->name }}</p>
-                    <p style="color:#555;font-size:11px;margin-top:2px">{{ \Carbon\Carbon::parse($record->attended_at)->format('h:i A') }}</p>
-                </div>
-                <div style="text-align:right">
-                    <span class="bfh-badge active" style="text-transform:capitalize">{{ $record->session_slot }}</span>
-                    <p style="color:#555;font-size:10px;margin-top:4px">{{ $record->marked_by === 'client' ? 'Self check-in' : 'Trainer marked' }}</p>
-                </div>
-            </div>
-        @endforeach
+    <div class="bfh-card" style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <div style="width:38px;height:38px;background:#2a2a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:12px;font-weight:700;flex-shrink:0">
+            {{ strtoupper(substr($record->client->name, 0, 2)) }}
+        </div>
+        <div style="flex:1">
+            <p style="color:#fff;font-size:13px;font-weight:500">{{ $record->client->name }}</p>
+            <p style="color:#555;font-size:11px;margin-top:2px">{{ \Carbon\Carbon::parse($record->attended_at)->format('h:i A') }}</p>
+        </div>
+        <div style="text-align:right">
+            <span class="bfh-badge active" style="text-transform:capitalize">{{ $record->session_slot }}</span>
+            <p style="font-size:10px;margin-top:4px;{{ $record->marked_by === 'client' ? 'color:#4caf50' : 'color:#FF6B00' }}">
+                {{ $record->marked_by === 'client' ? '✓ Self check-in' : '✓ You marked' }}
+            </p>
+        </div>
+    </div>
+@endforeach
     @endif
 
 </x-becky-layout>

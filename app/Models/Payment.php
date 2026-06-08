@@ -31,4 +31,14 @@ class Payment extends Model
     {
         return $this->belongsTo(Subscription::class);
     }
+
+    public function markedByTrainer()
+{
+    return $this->belongsTo(User::class, 'marked_by_trainer_id');
+}
+
+public function markedByAdmin()
+{
+    return $this->belongsTo(User::class, 'marked_by_admin_id');
+}
 }

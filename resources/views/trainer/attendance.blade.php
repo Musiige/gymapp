@@ -41,18 +41,23 @@
             <p style="color:#555;font-size:13px">No attendance recorded today yet.</p>
         </div>
     @else
-        @foreach($todayAttendance as $record)
-            <div class="bfh-card" style="display:flex;align-items:center;gap:14px;margin-bottom:10px">
-                <div style="width:40px;height:40px;background:#2a2a2a;border:0.5px solid #3a3a3a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:13px;font-weight:700;flex-shrink:0">
-                    {{ strtoupper(substr($record->client->name, 0, 2)) }}
-                </div>
-                <div style="flex:1">
-                    <p style="color:#fff;font-size:14px;font-weight:500">{{ $record->client->name }}</p>
-                    <p style="color:#555;font-size:12px;margin-top:2px">{{ \Carbon\Carbon::parse($record->attended_at)->format('h:i A') }}</p>
-                </div>
-                <span class="bfh-badge active" style="text-transform:capitalize">{{ $record->session_slot }}</span>
-            </div>
-        @endforeach
+       @foreach($todayAttendance as $record)
+    <div class="bfh-card" style="display:flex;align-items:center;gap:14px;margin-bottom:10px">
+        <div style="width:40px;height:40px;background:#2a2a2a;border:0.5px solid #3a3a3a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:13px;font-weight:700;flex-shrink:0">
+            {{ strtoupper(substr($record->client->name, 0, 2)) }}
+        </div>
+        <div style="flex:1">
+            <p style="color:#fff;font-size:14px;font-weight:500">{{ $record->client->name }}</p>
+            <p style="color:#555;font-size:12px;margin-top:2px">{{ \Carbon\Carbon::parse($record->attended_at)->format('h:i A') }}</p>
+        </div>
+        <div style="text-align:right">
+            <span class="bfh-badge active" style="text-transform:capitalize">{{ $record->session_slot }}</span>
+            <p style="font-size:10px;margin-top:4px;{{ $record->marked_by === 'client' ? 'color:#4caf50' : 'color:#FF6B00' }}">
+                {{ $record->marked_by === 'client' ? '✓ Self check-in' : '✓ Trainer marked' }}
+            </p>
+        </div>
+    </div>
+@endforeach
     @endif
 
 </x-becky-layout>

@@ -62,7 +62,18 @@
                     </div>
                     <div>
                         <p style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:1px">Method</p>
-                        <p style="color:#aaa;font-size:13px;font-weight:600;margin-top:2px;text-transform:capitalize">{{ $sub->payment->payment_method ?? '—' }}</p>
+                        <p style="color:#aaa;font-size:13px;font-weight:600;margin-top:2px;text-transform:capitalize">
+    {{ $sub->payment->payment_method ?? '—' }}
+   @if($sub->payment && $sub->payment->marked_by_trainer_id)
+    <span style="color:#FF6B00;font-size:11px;display:block;margin-top:2px">
+        Recorded by {{ $sub->payment->markedByTrainer->name ?? 'Trainer' }}
+    </span>
+@elseif($sub->payment && $sub->payment->marked_paid_by_admin)
+    <span style="color:#4a9eff;font-size:11px;display:block;margin-top:2px">
+        Recorded by admin
+    </span>
+@endif
+</p>
                     </div>
                 </div>
 

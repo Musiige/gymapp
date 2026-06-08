@@ -82,9 +82,9 @@
     {{-- Check in --}}
 @php
     $currentHour = now()->hour;
-    $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
-        : ($currentHour >= 8 && $currentHour < 15 ? 'midday'
-        : ($currentHour >= 15 && $currentHour < 21 ? 'evening' : null));
+$currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
+    : ($currentHour >= 8 && $currentHour < 16 ? 'midday'
+    : ($currentHour >= 16 && $currentHour < 22 ? 'evening' : 'midday'));
 
     $alreadyCheckedIn = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
         ->where('session_slot', $currentSession)
@@ -94,7 +94,7 @@
 
 <div class="bfh-section-title" style="margin-top:8px">Check in</div>
 
-@if($subscription && $subscription->status === 'active')
+@if($subscription && in_array($subscription->status, ['active', 'pending']))
     @if($currentSession)
         @if($alreadyCheckedIn)
             <div class="bfh-card" style="text-align:center;padding:20px">
@@ -131,16 +131,21 @@
             <p style="color:#555;font-size:13px">No workouts assigned yet. Check back after your trainer sets one up.</p>
         </div>
     @else
-        @foreach($workouts as $assignment)
-            <div class="bfh-card" style="display:flex;align-items:center;gap:14px">
-                <div class="bfh-icon-box">{{ strtoupper(substr($assignment->workout->title, 0, 1)) }}</div>
-                <div style="flex:1;min-width:0">
-                    <p style="color:#fff;font-size:14px;font-weight:600">{{ $assignment->workout->title }}</p>
-                    <p style="color:#555;font-size:12px;margin-top:2px">by {{ $assignment->workout->trainer->name }}</p>
-                    <p style="color:#444;font-size:12px;margin-top:4px;line-height:1.5">{{ $assignment->workout->description }}</p>
-                </div>
+       @foreach($workouts as $assignment)
+    <a href="{{ route('client.workout.show', $assignment->id) }}" style="text-decoration:none;display:block">
+        <div class="bfh-card" style="display:flex;align-items:center;gap:14px">
+            <div class="bfh-icon-box">{{ strtoupper(substr($assignment->workout->title, 0, 1)) }}</div>
+            <div style="flex:1;min-width:0">
+                <p style="color:#fff;font-size:14px;font-weight:600">{{ $assignment->workout->title }}</p>
+                <p style="color:#555;font-size:12px;margin-top:2px">by {{ $assignment->workout->trainer->name }}</p>
+                <p style="color:#444;font-size:12px;margin-top:4px;line-height:1.5">
+                    {{ \Illuminate\Support\Str::limit($assignment->workout->description, 60) }}
+                </p>
             </div>
-        @endforeach
+            <span style="color:#444;font-size:20px;flex-shrink:0">›</span>
+        </div>
+    </a>
+@endforeach
     @endif
 
 </x-becky-layout>

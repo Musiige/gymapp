@@ -14,10 +14,11 @@ class AttendanceController extends Controller
     {
         $clients = User::where('role', 'client')->get();
 
-        $todayAttendance = Attendance::where('trainer_id', Auth::id())
-            ->whereDate('attended_at', today())
-            ->with('client')
-            ->get();
+       $clientIds = \App\Models\User::where('role', 'client')->pluck('id');
+$todayAttendance = Attendance::whereIn('user_id', $clientIds)
+    ->whereDate('attended_at', today())
+    ->with('client')
+    ->get();
 
         return view('trainer.attendance', compact('clients', 'todayAttendance'));
     }

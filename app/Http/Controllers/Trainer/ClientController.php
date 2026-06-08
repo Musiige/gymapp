@@ -19,7 +19,9 @@ class ClientController extends Controller
                       ->orWhere('phone', 'like', "%{$search}%");
                 });
             })
-            ->with(['subscriptions.membership'])
+            ->with(['subscriptions' => function ($q) {
+                $q->latest()->with(['membership', 'payment']);
+            }])
             ->get();
 
         return view('trainer.clients', compact('clients', 'search'));
