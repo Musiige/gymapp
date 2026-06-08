@@ -137,6 +137,32 @@
                                 </button>
                             </div>
                         </form>
+                        @if($sub->payment && $sub->payment->amount_paid > 0)
+    <div style="display:flex;gap:8px;margin-top:10px">
+        {{-- Edit payment --}}
+        <form method="POST" action="{{ route('admin.payment.edit', $sub->id) }}" style="flex:1">
+            @csrf
+            <div style="display:flex;gap:6px">
+                <input type="number" name="amount_paid"
+                    value="{{ $sub->payment->amount_paid }}"
+                    min="0"
+                    class="bfh-input" style="flex:1;padding:8px 10px;font-size:12px">
+                <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 12px;background:#1a2a3a;border:0.5px solid #4a9eff;color:#4a9eff;white-space:nowrap">
+                    Edit
+                </button>
+            </div>
+        </form>
+
+        {{-- Void payment --}}
+        <form method="POST" action="{{ route('admin.payment.void', $sub->id) }}"
+            onsubmit="return confirm('Are you sure you want to void this payment? This cannot be undone.')">
+            @csrf
+            <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 14px;background:#3a1a1a;border:0.5px solid #ff4444;color:#ff4444;white-space:nowrap">
+                Void
+            </button>
+        </form>
+    </div>
+@endif
                     </div>
                 @endif
             </div>

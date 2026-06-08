@@ -116,6 +116,26 @@
         body.light div[style*="background:#1e1e1e"]{background:#fff !important}
         body.light div[style*="background:#3a1a0a"]{background:#fff3e0 !important;border-color:#FF6B00}
         body.light span[style*="background:#2a2a2a"]{background:#f0f0f0 !important;color:#666 !important}
+        body.light .bfh-nav a span{color:#999}
+body.light .bfh-nav a.active span{color:#FF6B00}
+body.light .bfh-nav{background:#fff;border-top:1px solid #e0e0e0}
+body.light .bfh-logo-main{color:#FF6B00}
+body.light .bfh-section-title{color:#888;font-weight:600}
+body.light .bfh-stat-label{color:#888}
+body.light .bfh-stat-sub{color:#999}
+body.light .bfh-form-label{color:#666;font-weight:600}
+body.light p{color:#333}
+body.light span{color:#444}
+body.light .bfh-table th{color:#666;font-weight:700}
+body.light .bfh-table td{color:#333}
+body.light .bfh-input{color:#111;background:#fff;border-color:#d0d0d0}
+body.light .bfh-select{color:#111;background:#fff;border-color:#d0d0d0}
+body.light .bfh-card p{color:#333}
+body.light .bfh-divider{background:#ddd}
+body.light div[style*="color:#555"]{color:#666 !important}
+body.light div[style*="color:#444"]{color:#555 !important}
+body.light span[style*="color:#555"]{color:#666 !important}
+body.light span[style*="color:#444"]{color:#555 !important}
     </style>
 </head>
 <body>

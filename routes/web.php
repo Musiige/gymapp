@@ -111,3 +111,9 @@ Route::get('/admin/clients/{id}', [App\Http\Controllers\Admin\ClientController::
 
     Route::post('/trainer/payment/{subscription}/mark-paid', [App\Http\Controllers\Trainer\PaymentController::class, 'markPaid'])
     ->name('trainer.payment.mark');
+
+    Route::post('/admin/payment/{subscription}/void', [App\Http\Controllers\Admin\PaymentController::class, 'voidPayment'])
+    ->name('admin.payment.void');
+
+Route::post('/admin/payment/{subscription}/edit', [App\Http\Controllers\Admin\PaymentController::class, 'editPayment'])
+    ->name('admin.payment.edit');

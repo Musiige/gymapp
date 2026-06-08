@@ -1,10 +1,11 @@
 <x-becky-layout>
     @php
-        $subscription = \App\Models\Subscription::where('user_id', Auth::id())
-            ->whereIn('status', ['active', 'pending'])
-            ->with(['membership', 'payment'])
-            ->latest()
-            ->first();
+       $subscription = \App\Models\Subscription::where('user_id', Auth::id())
+    ->whereIn('status', ['active', 'pending'])
+    ->where('end_date', '>=', now())
+    ->with(['membership', 'payment'])
+    ->latest()
+    ->first();
 
         $workouts = \App\Models\WorkoutAssignment::where('client_id', Auth::id())
             ->with('workout.trainer')
@@ -94,7 +95,7 @@ $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
 
 <div class="bfh-section-title" style="margin-top:8px">Check in</div>
 
-@if($subscription && in_array($subscription->status, ['active', 'pending']))
+@if($subscription && $subscription->status === 'active')
     @if($currentSession)
         @if($alreadyCheckedIn)
             <div class="bfh-card" style="text-align:center;padding:20px">
@@ -138,8 +139,8 @@ $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
             <div style="flex:1;min-width:0">
                 <p style="color:#fff;font-size:14px;font-weight:600">{{ $assignment->workout->title }}</p>
                 <p style="color:#555;font-size:12px;margin-top:2px">by {{ $assignment->workout->trainer->name }}</p>
-                <p style="color:#444;font-size:12px;margin-top:4px;line-height:1.5">
-                    {{ \Illuminate\Support\Str::limit($assignment->workout->description, 60) }}
+               <p style="color:#444;font-size:12px;margin-top:4px;line-height:1.6;white-space:pre-line">
+                {{ \Illuminate\Support\Str::limit($assignment->workout->description, 80) }}
                 </p>
             </div>
             <span style="color:#444;font-size:20px;flex-shrink:0">›</span>

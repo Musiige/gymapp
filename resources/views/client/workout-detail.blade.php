@@ -24,7 +24,7 @@
         <div class="bfh-divider"></div>
 
         <div class="bfh-section-title">Description</div>
-        <p style="color:#ccc;font-size:14px;line-height:1.8">{{ $assignment->workout->description }}</p>
+        <p style="color:#ccc;font-size:14px;line-height:1.8;white-space:pre-line">{{ $assignment->workout->description }}</p>
     </div>
 
     <div class="bfh-card">

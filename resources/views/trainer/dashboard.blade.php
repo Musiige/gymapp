@@ -8,16 +8,22 @@
         <p style="color:#555;font-size:13px;margin-top:4px">{{ now()->format('l, d M Y') }}</p>
     </div>
 
-    @php
-        $totalClients = \App\Models\User::where('role', 'client')->count();
-        $todayCount = \App\Models\Attendance::where('trainer_id', Auth::id())
-            ->whereDate('attended_at', today())
-            ->count();
-        $totalWorkouts = \App\Models\Workout::where('trainer_id', Auth::id())->count();
-        $monthCount = \App\Models\Attendance::where('trainer_id', Auth::id())
-            ->whereMonth('attended_at', now()->month)
-            ->count();
-    @endphp
+   @php
+    $clientIds = \App\Models\User::where('role', 'client')->pluck('id');
+    $totalClients = $clientIds->count();
+    $todayCount = \App\Models\Attendance::whereIn('user_id', $clientIds)
+        ->whereDate('attended_at', today())
+        ->count();
+    $monthCount = \App\Models\Attendance::whereIn('user_id', $clientIds)
+        ->whereMonth('attended_at', now()->month)
+        ->count();
+    $totalWorkouts = \App\Models\Workout::where('trainer_id', Auth::id())->count();
+    $todayAttendance = \App\Models\Attendance::whereIn('user_id', $clientIds)
+        ->whereDate('attended_at', today())
+        ->with('client')
+        ->latest('attended_at')
+        ->get();
+@endphp
 
     <div class="bfh-stat-grid">
         <div class="bfh-stat">
