@@ -91,19 +91,29 @@ $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
         ->where('session_slot', $currentSession)
         ->whereDate('attended_at', today())
         ->exists() : false;
+
+        $trainerMarked = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
+    ->where('session_slot', $currentSession)
+    ->whereDate('attended_at', today())
+    ->where('marked_by', 'trainer')
+    ->exists() : false;
 @endphp
 
 <div class="bfh-section-title" style="margin-top:8px">Check in</div>
 
 @if($subscription && $subscription->status === 'active')
     @if($currentSession)
-        @if($alreadyCheckedIn)
-            <div class="bfh-card" style="text-align:center;padding:20px">
-                <p style="font-size:28px;margin-bottom:8px">✅</p>
-                <p style="color:#4caf50;font-size:15px;font-weight:600">Already checked in</p>
-                <p style="color:#555;font-size:12px;margin-top:4px;text-transform:capitalize">{{ $currentSession }} session</p>
-            </div>
+       @if($alreadyCheckedIn || $trainerMarked)
+    <div class="bfh-card" style="text-align:center;padding:20px">
+        <p style="font-size:28px;margin-bottom:8px">✅</p>
+        @if($trainerMarked)
+            <p style="color:#FF6B00;font-size:15px;font-weight:600">Trainer checked you in</p>
         @else
+            <p style="color:#4caf50;font-size:15px;font-weight:600">Already checked in</p>
+        @endif
+        <p style="color:#555;font-size:12px;margin-top:4px;text-transform:capitalize">{{ $currentSession }} session</p>
+    </div>
+@else
             <form method="POST" action="{{ route('client.checkin') }}">
                 @csrf
                 <input type="hidden" name="session_slot" value="{{ $currentSession }}">

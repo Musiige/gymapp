@@ -33,6 +33,19 @@
                     <div class="bfh-icon-box">{{ strtoupper(substr($workout->title, 0, 1)) }}</div>
                     <div style="flex:1">
                         <p style="color:#fff;font-size:14px;font-weight:600">{{ $workout->title }}</p>
+                        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px">
+    <div class="bfh-icon-box">{{ strtoupper(substr($workout->title, 0, 1)) }}</div>
+    <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+            <p style="color:#fff;font-size:14px;font-weight:600">{{ $workout->title }}</p>
+            <a href="{{ route('trainer.workouts.edit', $workout->id) }}"
+                style="color:#FF6B00;font-size:12px;text-decoration:none;flex-shrink:0;margin-left:8px">
+                Edit ✎
+            </a>
+        </div>
+        <p style="color:#555;font-size:12px;margin-top:4px;line-height:1.5;white-space:pre-line">{{ $workout->description }}</p>
+    </div>
+</div>
                         <p style="color:#555;font-size:12px;margin-top:4px;line-height:1.5">{{ $workout->description }}</p>
                     </div>
                 </div>

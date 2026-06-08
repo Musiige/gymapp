@@ -108,14 +108,17 @@ class SubscriptionController extends Controller
         return back()->with('error', 'You need an active membership to check in.');
     }
 
-    $already = \App\Models\Attendance::where('user_id', Auth::id())
-        ->where('session_slot', $request->session_slot)
-        ->whereDate('attended_at', today())
-        ->first();
+   $already = \App\Models\Attendance::where('user_id', Auth::id())
+    ->where('session_slot', $request->session_slot)
+    ->whereDate('attended_at', today())
+    ->first();
 
-    if ($already) {
-        return back()->with('error', 'You have already checked in for this session today.');
-    }
+if ($already) {
+    $msg = $already->marked_by === 'trainer'
+        ? 'Your trainer has already marked your attendance for this session.'
+        : 'You have already checked in for this session today.';
+    return back()->with('error', $msg);
+}
 
     \App\Models\Attendance::create([
         'user_id'      => Auth::id(),

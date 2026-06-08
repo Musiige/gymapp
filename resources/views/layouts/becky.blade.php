@@ -75,67 +75,82 @@
         .bfh-icon-box{width:40px;height:40px;background:#2a2a2a;border:0.5px solid #3a3a3a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:15px;font-weight:700;flex-shrink:0}
         @media(min-width:768px){.bfh-topbar{padding:14px 40px}.bfh-content{padding:32px 24px 110px}}
 
-        /* Light mode */
-        body.light{background:#f5f5f5;color:#111}
-        body.light .bfh-topbar{background:#fff;border-bottom:0.5px solid #e0e0e0}
-        body.light .bfh-logo-sub{color:#999}
-        body.light .bfh-avatar{background:#f0f0f0;border-color:#e0e0e0}
-        body.light .bfh-content{background:#f5f5f5}
-        body.light .bfh-card{background:#fff;border-color:#e8e8e8}
-        body.light .bfh-card.orange-border{border-color:#FF6B00}
-        body.light .bfh-stat{background:#fff;border-color:#e8e8e8}
-        body.light .bfh-stat-label{color:#999}
-        body.light .bfh-stat-sub{color:#aaa}
-        body.light .bfh-section-title{color:#999}
-        body.light .bfh-nav{background:#fff;border-top:0.5px solid #e8e8e8}
-        body.light .bfh-nav a{color:#bbb}
-        body.light .bfh-nav a.active{color:#FF6B00}
-        body.light .bfh-input{background:#f8f8f8;border-color:#e0e0e0;color:#111}
-        body.light .bfh-input::placeholder{color:#bbb}
-        body.light .bfh-select{background:#f8f8f8;border-color:#e0e0e0;color:#111}
-        body.light .bfh-form-label{color:#999}
-        body.light .bfh-icon-box{background:#f0f0f0;border-color:#e0e0e0;color:#FF6B00}
-        body.light .bfh-progress-bar{background:#e8e8e8}
-        body.light .bfh-divider{background:#e8e8e8}
-        body.light .bfh-table th{color:#999;border-color:#e8e8e8}
-        body.light .bfh-table td{border-color:#f0f0f0;color:#444}
-        body.light .bfh-alert-success{background:#f0fff0;border-color:#c3e6c3;color:#2e7d32}
-        body.light .bfh-alert-error{background:#fff0f0;border-color:#e6c3c3;color:#c62828}
-        body.light .bfh-badge.expired{background:#f0f0f0;color:#999}
-        body.light .bfh-btn.grey-btn{background:#f0f0f0;border-color:#e0e0e0;color:#666}
-        body.light .bfh-btn.danger{background:#fff0f0;border-color:#ffcccc;color:#c62828}
-        body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
-        body.light .bfh-stat-value{color:#FF6B00}
-        body.light p[style*="color:#fff"]{color:#111 !important}
-        body.light p[style*="color:#aaa"]{color:#666 !important}
-        body.light p[style*="color:#555"]{color:#888 !important}
-        body.light p[style*="color:#777"]{color:#999 !important}
-        body.light h2[style*="color:#fff"]{color:#111 !important}
-        body.light .bfh-nav a{color:#ccc}
-        body.light div[style*="background:#2a2a2a"]{background:#f0f0f0 !important}
-        body.light div[style*="background:#1e1e1e"]{background:#fff !important}
-        body.light div[style*="background:#3a1a0a"]{background:#fff3e0 !important;border-color:#FF6B00}
-        body.light span[style*="background:#2a2a2a"]{background:#f0f0f0 !important;color:#666 !important}
-        body.light .bfh-nav a span{color:#999}
-body.light .bfh-nav a.active span{color:#FF6B00}
+       /* Light mode */
+body.light{
+    --bfh-bg: #f0f0f0;
+    --bfh-surface: #ffffff;
+    --bfh-card: #ffffff;
+    --bfh-card-border: #e0e0e0;
+    --bfh-text-primary: #111111;
+    --bfh-text-secondary: #555555;
+    --bfh-text-muted: #888888;
+    --bfh-topbar: #ffffff;
+    --bfh-nav: #ffffff;
+    --bfh-input-bg: #f8f8f8;
+    --bfh-input-border: #d0d0d0;
+    --bfh-divider: #e0e0e0;
+    background:#f0f0f0 !important;
+    color:#111 !important;
+}
+body.light .bfh-topbar{background:#fff;border-bottom:1px solid #e0e0e0}
 body.light .bfh-nav{background:#fff;border-top:1px solid #e0e0e0}
-body.light .bfh-logo-main{color:#FF6B00}
-body.light .bfh-section-title{color:#888;font-weight:600}
+body.light .bfh-nav a{color:#aaa}
+body.light .bfh-nav a.active{color:#FF6B00}
+body.light .bfh-nav a span{color:inherit}
+body.light .bfh-card{background:#fff;border-color:#e0e0e0}
+body.light .bfh-card.orange-border{border-color:#FF6B00}
+body.light .bfh-stat{background:#fff;border-color:#e0e0e0}
 body.light .bfh-stat-label{color:#888}
+body.light .bfh-stat-value{color:#FF6B00}
 body.light .bfh-stat-sub{color:#999}
-body.light .bfh-form-label{color:#666;font-weight:600}
-body.light p{color:#333}
-body.light span{color:#444}
-body.light .bfh-table th{color:#666;font-weight:700}
-body.light .bfh-table td{color:#333}
-body.light .bfh-input{color:#111;background:#fff;border-color:#d0d0d0}
-body.light .bfh-select{color:#111;background:#fff;border-color:#d0d0d0}
-body.light .bfh-card p{color:#333}
-body.light .bfh-divider{background:#ddd}
-body.light div[style*="color:#555"]{color:#666 !important}
-body.light div[style*="color:#444"]{color:#555 !important}
-body.light span[style*="color:#555"]{color:#666 !important}
-body.light span[style*="color:#444"]{color:#555 !important}
+body.light .bfh-stat-value.grey{color:#666}
+body.light .bfh-section-title{color:#888;font-weight:700}
+body.light .bfh-input{background:#fff;border-color:#d0d0d0;color:#111}
+body.light .bfh-input::placeholder{color:#bbb}
+body.light .bfh-input:focus{border-color:#FF6B00}
+body.light .bfh-select{background:#fff;border-color:#d0d0d0;color:#111}
+body.light .bfh-form-label{color:#666;font-weight:700}
+body.light .bfh-icon-box{background:#f0f0f0;border-color:#e0e0e0;color:#FF6B00}
+body.light .bfh-progress-bar{background:#e0e0e0}
+body.light .bfh-divider{background:#e0e0e0}
+body.light .bfh-table th{color:#666;border-color:#e0e0e0;font-weight:700}
+body.light .bfh-table td{border-color:#f0f0f0;color:#333}
+body.light .bfh-alert-success{background:#f0fff4;border-color:#b7ebc8;color:#1a6b35}
+body.light .bfh-alert-error{background:#fff0f0;border-color:#f5c6c6;color:#b91c1c}
+body.light .bfh-badge.expired{background:#f0f0f0;color:#888}
+body.light .bfh-badge.changed{background:#e8f0ff;color:#2563eb}
+body.light .bfh-btn.grey-btn{background:#f0f0f0;border-color:#d0d0d0;color:#555}
+body.light .bfh-btn.danger{background:#fff0f0;border-color:#fca5a5;color:#b91c1c}
+body.light .bfh-btn.outline{border-color:#FF6B00;color:#FF6B00}
+
+/* Light mode — override all inline dark colors */
+body.light *[style*="color:#fff"]{color:#111 !important}
+body.light *[style*="color:#ffffff"]{color:#111 !important}
+body.light *[style*="color:#aaa"]{color:#555 !important}
+body.light *[style*="color:#888"]{color:#666 !important}
+body.light *[style*="color:#777"]{color:#666 !important}
+body.light *[style*="color:#666"]{color:#555 !important}
+body.light *[style*="color:#555"]{color:#444 !important}
+body.light *[style*="color:#444"]{color:#333 !important}
+body.light *[style*="color:#333"]{color:#222 !important}
+body.light *[style*="background:#1e1e1e"]{background:#fff !important}
+body.light *[style*="background:#2a2a2a"]{background:#f0f0f0 !important}
+body.light *[style*="background:#0a0a0a"]{background:#f8f8f8 !important}
+body.light *[style*="background:#141414"]{background:#f0f0f0 !important}
+body.light *[style*="background:#111"]{background:#f5f5f5 !important}
+body.light *[style*="background:#222"]{background:#e8e8e8 !important}
+body.light *[style*="border-color:#222"]{border-color:#e0e0e0 !important}
+body.light *[style*="border-top:0.5px solid #222"]{border-top:0.5px solid #e0e0e0 !important}
+body.light *[style*="border-bottom:0.5px solid #222"]{border-bottom:0.5px solid #e0e0e0 !important}
+body.light *[style*="color:#4caf50"]{color:#1a6b35 !important}
+body.light *[style*="color:#ff4444"]{color:#b91c1c !important}
+body.light *[style*="color:#4a9eff"]{color:#1d4ed8 !important}
+body.light *[style*="background:#3a1a1a"]{background:#fff0f0 !important}
+body.light *[style*="background:#1a3a1a"]{background:#f0fff4 !important}
+body.light *[style*="background:#1a2a3a"]{background:#eff6ff !important}
+body.light *[style*="background:#3a2a0a"]{background:#fffbeb !important}
+body.light *[style*="background:#3a1a0a"]{background:#fff7ed !important}
+body.light *[style*="background:#2a2a2a;border-radius:50%"]{background:#e8e8e8 !important}
     </style>
 </head>
 <body>
@@ -202,6 +217,10 @@ body.light span[style*="color:#444"]{color:#555 !important}
         class="{{ request()->routeIs('client.payment*') ? 'active' : '' }}">
         <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
         <span>Pay</span>
+    </a>
+    <a href="{{ route('client.inbox') }}" class="{{ request()->routeIs('client.inbox') ? 'active' : '' }}">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>Inbox</span>
     </a>
     <a href="{{ route('client.profile') }}" class="{{ request()->routeIs('client.profile') ? 'active' : '' }}">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

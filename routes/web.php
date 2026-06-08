@@ -117,3 +117,15 @@ Route::get('/admin/clients/{id}', [App\Http\Controllers\Admin\ClientController::
 
 Route::post('/admin/payment/{subscription}/edit', [App\Http\Controllers\Admin\PaymentController::class, 'editPayment'])
     ->name('admin.payment.edit');
+
+    Route::get('/trainer/workouts/{id}/edit', [App\Http\Controllers\Trainer\WorkoutController::class, 'edit'])
+    ->name('trainer.workouts.edit');
+
+Route::put('/trainer/workouts/{id}', [App\Http\Controllers\Trainer\WorkoutController::class, 'update'])
+    ->name('trainer.workouts.update');
+
+Route::delete('/trainer/workouts/{id}', [App\Http\Controllers\Trainer\WorkoutController::class, 'destroy'])
+    ->name('trainer.workouts.destroy');
+
+    Route::get('/client/inbox', [App\Http\Controllers\Client\InboxController::class, 'index'])
+    ->name('client.inbox');

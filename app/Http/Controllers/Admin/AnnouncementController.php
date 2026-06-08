@@ -19,33 +19,57 @@ class AnnouncementController extends Controller
     }
 
     public function send(Request $request, NotificationService $notificationService)
-    {
-        $request->validate([
-            'title'      => ['required', 'string', 'max:100'],
-            'message'    => ['required', 'string', 'max:500'],
-            'recipient'  => ['required', 'in:all,specific'],
-            'client_id'  => ['required_if:recipient,specific', 'exists:users,id'],
+{
+    $request->validate([
+        'title'     => ['required', 'string', 'max:100'],
+        'message'   => ['required', 'string', 'max:500'],
+        'recipient' => ['required', 'in:all,specific'],
+    ]);
+
+    if ($request->recipient === 'specific') {
+        $clientIds = $request->input('client_ids', []);
+
+        if (empty($clientIds)) {
+            return back()->with('error', 'Please select at least one client.');
+        }
+
+        \App\Models\Announcement::create([
+            'admin_id'       => Auth::id(),
+            'title'          => $request->title,
+            'message'        => $request->message,
+            'recipient_type' => 'specific',
+            'recipient_ids'  => $clientIds,
         ]);
 
-        if ($request->recipient === 'specific') {
-            $client = User::findOrFail($request->client_id);
-            if (!$client->fcm_token) {
-                return back()->with('error', 'This client has not enabled notifications.');
-            }
-            $notificationService->sendToToken($client->fcm_token, $request->title, $request->message);
-            return back()->with('success', 'Message sent to ' . $client->name . '.');
-        }
-
-        $tokens = User::where('role', 'client')
+        $clients = User::whereIn('id', $clientIds)
             ->whereNotNull('fcm_token')
-            ->pluck('fcm_token')
-            ->toArray();
+            ->get();
 
-        if (empty($tokens)) {
-            return back()->with('error', 'No clients have enabled notifications yet.');
+        foreach ($clients as $client) {
+            $notificationService->sendToToken($client->fcm_token, $request->title, $request->message);
         }
 
-        $notificationService->sendToMultiple($tokens, $request->title, $request->message);
-        return back()->with('success', 'Announcement sent to ' . count($tokens) . ' clients.');
+        return back()->with('success', 'Message sent to ' . count($clientIds) . ' client(s).');
     }
+
+    \App\Models\Announcement::create([
+        'admin_id'       => Auth::id(),
+        'title'          => $request->title,
+        'message'        => $request->message,
+        'recipient_type' => 'all',
+        'recipient_ids'  => null,
+    ]);
+
+    $tokens = User::where('role', 'client')
+        ->whereNotNull('fcm_token')
+        ->pluck('fcm_token')
+        ->toArray();
+
+    if (empty($tokens)) {
+        return back()->with('error', 'No clients have enabled notifications yet.');
+    }
+
+    $notificationService->sendToMultiple($tokens, $request->title, $request->message);
+    return back()->with('success', 'Announcement sent to ' . count($tokens) . ' clients.');
+}
 }
