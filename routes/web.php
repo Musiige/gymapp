@@ -129,3 +129,15 @@ Route::delete('/trainer/workouts/{id}', [App\Http\Controllers\Trainer\WorkoutCon
 
     Route::get('/client/inbox', [App\Http\Controllers\Client\InboxController::class, 'index'])
     ->name('client.inbox');
+
+    Route::get('/admin/staff', [App\Http\Controllers\Admin\StaffController::class, 'index'])
+    ->name('admin.staff');
+
+Route::post('/admin/staff', [App\Http\Controllers\Admin\StaffController::class, 'store'])
+    ->name('admin.staff.store');
+
+Route::delete('/admin/staff/{id}', [App\Http\Controllers\Admin\StaffController::class, 'destroy'])
+    ->name('admin.staff.destroy');
+
+Route::post('/admin/staff/{id}/role', [App\Http\Controllers\Admin\StaffController::class, 'updateRole'])
+    ->name('admin.staff.role');

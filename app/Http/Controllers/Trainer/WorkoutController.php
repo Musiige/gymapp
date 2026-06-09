@@ -61,37 +61,38 @@ class WorkoutController extends Controller
 
         return back()->with('success', 'Workout assigned successfully.');
     }
+
     public function edit($id)
-{
-    $workout = Workout::where('trainer_id', Auth::id())->findOrFail($id);
-    $clients = User::where('role', 'client')->get();
-    return view('trainer.workout-edit', compact('workout', 'clients'));
-}
+    {
+        $workout = Workout::where('trainer_id', Auth::id())->findOrFail($id);
+        $clients = User::where('role', 'client')->get();
+        return view('trainer.workout-edit', compact('workout', 'clients'));
+    }
 
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'title'       => ['required', 'string', 'max:255'],
-        'description' => ['required', 'string'],
-    ]);
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title'       => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+        ]);
 
-    $workout = Workout::where('trainer_id', Auth::id())->findOrFail($id);
-    $workout->update([
-        'title'       => $request->title,
-        'description' => $request->description,
-    ]);
+        $workout = Workout::where('trainer_id', Auth::id())->findOrFail($id);
+        $workout->update([
+            'title'       => $request->title,
+            'description' => $request->description,
+        ]);
 
-    return redirect()->route('trainer.workouts')
-        ->with('success', 'Workout updated successfully.');
-}
+        return redirect()->route('trainer.workouts')
+            ->with('success', 'Workout updated successfully.');
+    }
 
-public function destroy($id)
-{
-    $workout = Workout::where('trainer_id', Auth::id())->findOrFail($id);
-    $workout->assignments()->delete();
-    $workout->delete();
+    public function destroy($id)
+    {
+        $workout = Workout::where('trainer_id', Auth::id())->findOrFail($id);
+        WorkoutAssignment::where('workout_id', $workout->id)->delete();
+        $workout->delete();
 
-    return redirect()->route('trainer.workouts')
-        ->with('success', 'Workout deleted.');
-}
+        return redirect()->route('trainer.workouts')
+            ->with('success', 'Workout deleted.');
+    }
 }

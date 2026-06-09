@@ -91,8 +91,12 @@ class SubscriptionController extends Controller
         'status'        => 'pending',
     ]);
 
-    return redirect()->route('client.dashboard')
-        ->with('success', 'Package selected successfully. Please complete your payment.');
+   $newSubscription = Subscription::where('user_id', Auth::id())
+    ->latest()
+    ->first();
+
+return redirect()->route('client.payment', $newSubscription->id)
+    ->with('success', 'Package selected successfully. Please complete your payment.');
 }
     public function checkin(Request $request)
 {

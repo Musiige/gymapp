@@ -70,8 +70,8 @@ class PaymentController extends Controller
             $subscription->update(['status' => 'active']);
         }
 
-        return redirect()->route('client.dashboard')
-            ->with('success', $this->paymentMessage($status, $balance, $amountDue));
+       return redirect()->route('client.dashboard')
+    ->with('success', $this->paymentMessage($status, $balance, $amountDue));
     }
 
     private function paymentMessage($status, $balance, $amountDue)
