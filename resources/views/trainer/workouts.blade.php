@@ -82,6 +82,7 @@
             </div>
         @endforeach
     @endif
+    
 <script>
     function filterSelect(input, selectId) {
         const select = document.getElementById(selectId);

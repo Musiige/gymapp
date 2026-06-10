@@ -51,12 +51,12 @@ class RegisteredUserController extends Controller
 
     Auth::login($user);
 
-    $role = $user->role;
+   $role = $user->role;
 
-    return match($role) {
-        'admin'   => redirect()->intended('/admin/dashboard'),
-        'trainer' => redirect()->intended('/trainer/dashboard'),
-        default   => redirect()->intended('/client/dashboard'),
-    };
+return match($role) {
+    'admin'   => redirect()->intended('/admin/dashboard'),
+    'trainer' => redirect()->intended('/trainer/dashboard'),
+    default   => redirect()->route('client.welcome'),
+};
 }
 }

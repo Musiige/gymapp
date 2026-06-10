@@ -64,4 +64,14 @@
 @endforeach
     @endif
 
+    <script>
+    function filterSelect(input, selectId) {
+        const select = document.getElementById(selectId);
+        const filter = input.value.toLowerCase();
+        Array.from(select.options).forEach(option => {
+            if (option.value === '') return;
+            option.style.display = option.text.toLowerCase().includes(filter) ? '' : 'none';
+        });
+    }
+</script>
 </x-becky-layout>

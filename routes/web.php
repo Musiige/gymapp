@@ -21,10 +21,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/client/dashboard', function () {
-        abort_unless(Auth::user()->role === 'client', 403);
-        return view('client.dashboard');
-    })->name('client.dashboard');
+   Route::get('/client/dashboard', function () {
+    abort_unless(Auth::user()->role === 'client', 403);
+    if (!Auth::user()->onboarded) {
+        return redirect()->route('client.welcome');
+    }
+    return view('client.dashboard');
+})->name('client.dashboard');
 
    Route::get('/client/subscription', [App\Http\Controllers\Client\SubscriptionController::class, 'index'])
     ->name('client.subscription');
@@ -141,3 +144,12 @@ Route::delete('/admin/staff/{id}', [App\Http\Controllers\Admin\StaffController::
 
 Route::post('/admin/staff/{id}/role', [App\Http\Controllers\Admin\StaffController::class, 'updateRole'])
     ->name('admin.staff.role');
+
+    Route::get('/client/welcome', function () {
+    return view('client.welcome');
+})->name('client.welcome');
+
+Route::post('/client/welcome/done', function () {
+    \App\Models\User::where('id', Auth::id())->update(['onboarded' => true]);
+    return redirect()->route('client.dashboard');
+})->name('client.welcome.done');
