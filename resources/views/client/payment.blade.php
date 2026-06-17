@@ -22,6 +22,14 @@
         </div>
     </div>
 
+    {{-- Disclaimer --}}
+    <div style="background:#1a1a0a;border:0.5px solid #3a3a0a;border-radius:12px;padding:14px 16px;margin-bottom:20px">
+        <p style="color:#FF6B00;font-size:12px;font-weight:700;margin-bottom:6px">⚠️ Important Notice</p>
+        <p style="color:#888;font-size:12px;line-height:1.6">
+            Once a package is purchased, time is not transferred to the following weeks even if you miss sessions while the gym was open. All packages run for their full duration from the start date regardless of attendance.
+        </p>
+    </div>
+
     @if(!$payment || $payment->status !== 'paid')
 
         <div class="bfh-section-title">Payment method</div>
@@ -66,7 +74,17 @@
                 @error('amount')<p class="bfh-error">{{ $message }}</p>@enderror
             </div>
 
-            <button type="submit" class="bfh-btn">Pay Now</button>
+            <button type="submit" class="bfh-btn" style="margin-bottom:12px">Pay Now</button>
+        </form>
+
+        {{-- Cancel button --}}
+        <form method="POST" action="{{ route('client.subscription.cancel', $subscription->id) }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="bfh-btn danger"
+                onclick="return confirm('Are you sure you want to cancel this subscription? This cannot be undone.')">
+                Cancel Subscription
+            </button>
         </form>
 
         <script>

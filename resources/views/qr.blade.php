@@ -62,11 +62,11 @@
 </head>
 <body>
     <div class="card">
-        <div class="gym-name">GYM NAME</div>
+        <div class="gym-name">Becky Fitness Hub</div>
         <div class="subtitle">Scan to check in or register</div>
 
         <div class="qr-wrapper">
-            {!! QrCode::size(220)->generate('http://192.168.1.65/gymapp/public/register') !!}
+            {!! QrCode::size(220)->generate('https://beckyfitnesshub.com') !!}
         </div>
 
         <div class="instructions">

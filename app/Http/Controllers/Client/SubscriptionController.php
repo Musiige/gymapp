@@ -134,4 +134,24 @@ if ($already) {
 
     return back()->with('success', 'Check-in successful. Welcome to your session! 💪');
 }
+public function cancel($subscriptionId)
+    {
+        $subscription = Subscription::where('user_id', Auth::id())
+            ->where('id', $subscriptionId)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$subscription) {
+            return back()->with('error', 'This subscription cannot be cancelled.');
+        }
+
+        if ($subscription->payment && $subscription->payment->amount_paid > 0) {
+            return back()->with('error', 'Cannot cancel a subscription that already has a payment recorded.');
+        }
+
+        $subscription->update(['status' => 'expired']);
+
+        return redirect()->route('client.subscription')
+            ->with('success', 'Subscription cancelled successfully.');
+    }
 }

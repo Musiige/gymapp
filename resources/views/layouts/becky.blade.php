@@ -282,57 +282,6 @@ body.light *[style*="background:#2a2a2a;border-radius:50%"]{background:#e8e8e8 !
 @endif
 @endauth
 
-@auth
-@if(Auth::user()->role === 'client' && !Auth::user()->fcm_token)
-<button id="notif-test-btn" style="position:fixed;bottom:80px;right:16px;background:#1e1e1e;color:#FF6B00;border:0.5px solid #FF6B00;padding:10px 16px;border-radius:50px;font-size:12px;font-weight:700;z-index:200;cursor:pointer;letter-spacing:1px;font-family:'Figtree',sans-serif">
-    🔔 Enable Notifications
-</button>
-<script>
-    async function loadFirebaseAndRequest() {
-        try {
-            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-            const { getMessaging, getToken, onMessage } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js');
-            const app = initializeApp({
-                apiKey: "{{ env('FIREBASE_API_KEY') }}",
-                projectId: "{{ env('FIREBASE_PROJECT_ID') }}",
-                messagingSenderId: "{{ env('FCM_SENDER_ID') }}",
-                appId: "{{ env('FIREBASE_APP_ID') }}"
-            });
-            let messaging;
-            if ('serviceWorker' in navigator) {
-                await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-                await navigator.serviceWorker.ready;
-                messaging = getMessaging(app);
-            } else { return; }
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                const token = await getToken(messaging, { vapidKey: "{{ env('FIREBASE_VAPID_KEY') }}" });
-                if (token) {
-                    await fetch('/client/fcm-token', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                        body: JSON.stringify({ token })
-                    });
-                    document.getElementById('notif-test-btn').style.display = 'none';
-                }
-            }
-            onMessage(messaging, (payload) => {
-                const toast = document.createElement('div');
-                toast.style.cssText = 'position:fixed;top:20px;right:16px;left:16px;background:#1e1e1e;border:0.5px solid #FF6B00;color:#fff;padding:16px;border-radius:12px;z-index:9999;font-family:Figtree,sans-serif;max-width:400px;margin:0 auto';
-                toast.innerHTML = '<p style="font-weight:700;margin:0 0 4px;color:#FF6B00">🔔 ' + payload.notification.title + '</p><p style="font-size:13px;margin:0;color:#aaa">' + payload.notification.body + '</p>';
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 6000);
-            });
-        } catch(e) { console.log(e); }
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        var btn = document.getElementById('notif-test-btn');
-        if (btn) btn.addEventListener('click', loadFirebaseAndRequest);
-    });
-</script>
-@endif
-@endauth
-
 <script>
     function toggleTheme() {
         const body = document.body;

@@ -13,9 +13,7 @@ class AnnouncementController extends Controller
 {
     public function index()
     {
-        $clients = User::where('role', 'client')
-            ->whereNotNull('fcm_token')
-            ->get();
+       $clients = User::where('role', 'client')->get();
 
         return view('admin.announcements', compact('clients'));
     }
@@ -72,6 +70,7 @@ class AnnouncementController extends Controller
     }
 
     $notificationService->sendToMultiple($tokens, $request->title, $request->message);
-    return back()->with('success', 'Announcement sent to ' . count($tokens) . ' clients.');
+    $totalClients = User::where('role', 'client')->count();
+return back()->with('success', 'Announcement sent to ' . $totalClients . ' clients.');
 }
 }

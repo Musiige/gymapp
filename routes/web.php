@@ -5,9 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
-
 Route::get('/qr', function () {
     return view('qr');
 })->name('qr');
@@ -44,10 +43,8 @@ Route::post('/client/subscription', [App\Http\Controllers\Client\SubscriptionCon
 Route::post('/client/payment/{subscription}', [App\Http\Controllers\Client\PaymentController::class, 'process'])
     ->name('client.payment.process');
 
-    Route::get('/trainer/dashboard', function () {
-        abort_unless(Auth::user()->role === 'trainer', 403);
-        return view('trainer.dashboard');
-    })->name('trainer.dashboard');
+Route::get('/trainer/dashboard', [App\Http\Controllers\Trainer\DashboardController::class, 'index'])
+    ->name('trainer.dashboard');
 
     // Trainer routes
 Route::get('/trainer/clients', [App\Http\Controllers\Trainer\ClientController::class, 'index'])
@@ -91,6 +88,27 @@ Route::get('/client/profile', [App\Http\Controllers\Client\ProfileController::cl
 
 Route::post('/client/profile', [App\Http\Controllers\Client\ProfileController::class, 'update'])
     ->name('client.profile.update');
+
+    Route::get('/admin/attendance/session', [App\Http\Controllers\Admin\DashboardController::class, 'sessionAttendance'])
+    ->name('admin.attendance.session');
+
+    Route::get('/admin/reports/revenue', [App\Http\Controllers\Admin\ReportController::class, 'revenue'])
+    ->name('admin.reports.revenue');
+
+Route::get('/admin/reports/attendance', [App\Http\Controllers\Admin\ReportController::class, 'attendance'])
+    ->name('admin.reports.attendance');
+
+Route::get('/admin/reports/payment-status', [App\Http\Controllers\Admin\ReportController::class, 'paymentStatus'])
+    ->name('admin.reports.payment-status');
+
+    Route::delete('/client/subscription/{subscription}/cancel', [App\Http\Controllers\Client\SubscriptionController::class, 'cancel'])
+    ->name('client.subscription.cancel');
+
+    Route::get('/trainer/attendance/session', [App\Http\Controllers\Trainer\DashboardController::class, 'sessionAttendance'])
+    ->name('trainer.attendance.session');
+
+    Route::get('/trainer/reports/attendance', [App\Http\Controllers\Trainer\DashboardController::class, 'attendanceHistory'])
+    ->name('trainer.reports.attendance');
 
 require __DIR__.'/auth.php';
 

@@ -71,7 +71,7 @@ class SendMonthlyReports extends Command
                         'mime' => 'application/pdf',
                     ]);
             });
-            sleep(2);
+            
         }
 
         $this->info('Admin report sent.');
@@ -103,7 +103,7 @@ class SendMonthlyReports extends Command
                         'mime' => 'application/pdf',
                     ]);
             });
-            sleep(2);
+           
         }
 
         $this->info('Trainer reports sent.');
@@ -148,7 +148,7 @@ class SendMonthlyReports extends Command
                         'mime' => 'application/pdf',
                     ]);
             });
-            sleep(2);
+           
         }
 
         $this->info('Client reports sent.');
