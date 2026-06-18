@@ -48,11 +48,6 @@
             <div class="bfh-stat-sub">All time</div>
         </div>
         <div class="bfh-stat">
-            <div class="bfh-stat-label">Total paid</div>
-            <div class="bfh-stat-value" style="font-size:16px">{{ number_format($totalPaid) }}</div>
-            <div class="bfh-stat-sub">UGX all time</div>
-        </div>
-        <div class="bfh-stat">
             <div class="bfh-stat-label">Packages</div>
             <div class="bfh-stat-value">{{ $client->subscriptions->count() }}</div>
             <div class="bfh-stat-sub">All time</div>

@@ -10,11 +10,11 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    public function index(Request $request)
+  public function index(Request $request)
     {
         $search = $request->get('search');
 
-        $clients = User::where('role', 'client')
+        $allClients = User::where('role', 'client')
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -29,7 +29,10 @@ class ClientController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.clients', compact('clients', 'search'));
+        $regularClients = $allClients->where('is_corporate', false);
+        $corporateClients = $allClients->where('is_corporate', true)->groupBy('company_name');
+
+        return view('admin.clients', compact('regularClients', 'corporateClients', 'search'));
     }
 
     public function show($id)
