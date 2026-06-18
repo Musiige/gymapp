@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Subscription;
 use App\Models\WorkoutAssignment;
 
-#[Fillable(['name', 'email', 'password','phone','role','fcm_token','onboarded'])]
+#[Fillable(['name', 'email', 'password','phone','role','fcm_token','onboarded','is_corporate','company_name'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {

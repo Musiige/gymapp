@@ -57,6 +57,7 @@
             <div class="bfh-stat-value">{{ $attendanceCount }}</div>
             <div class="bfh-stat-sub">This month</div>
         </div>
+  @if(!Auth::user()->is_corporate)
         <div class="bfh-stat">
             <div class="bfh-stat-label">Balance</div>
             <div class="bfh-stat-value grey">
@@ -66,6 +67,13 @@
                 {{ $subscription?->payment?->status === 'paid' ? 'Fully paid' : 'Outstanding' }}
             </div>
         </div>
+        @else
+        <div class="bfh-stat">
+            <div class="bfh-stat-label">Status</div>
+            <div class="bfh-stat-value grey" style="font-size:16px">Corporate</div>
+            <div class="bfh-stat-sub">{{ Auth::user()->company_name }}</div>
+        </div>
+        @endif
     </div>
 
     <div class="bfh-section-title">My membership</div>
@@ -79,9 +87,16 @@
         @endphp
         <div class="bfh-card orange-border">
             <div class="bfh-row">
-                <div>
-                    <p style="color:#fff;font-size:15px;font-weight:600">{{ $subscription->membership->name }}</p>
-                    <p style="color:#FF6B00;font-size:13px;margin-top:4px">UGX {{ number_format($subscription->membership->price) }}</p>
+              <div>
+                    <p style="color:#fff;font-size:15px;font-weight:600">
+                        {{ $subscription->membership->name }}
+                        @if(Auth::user()->is_corporate)
+                            <span style="color:#FF6B00">({{ Auth::user()->company_name }})</span>
+                        @endif
+                    </p>
+                    @if(!Auth::user()->is_corporate)
+                        <p style="color:#FF6B00;font-size:13px;margin-top:4px">UGX {{ number_format($subscription->membership->price) }}</p>
+                    @endif
                     <p style="color:#555;font-size:11px;margin-top:2px">Expires {{ \Carbon\Carbon::parse($subscription->end_date)->format('d M Y') }}</p>
                 </div>
                 <span class="bfh-badge {{ $subscription->status }}">{{ $subscription->status }}</span>
@@ -95,7 +110,7 @@
             </div>
         </div>
 
-        @if(!$subscription->payment || $subscription->payment->status !== 'paid')
+       @if(!Auth::user()->is_corporate && (!$subscription->payment || $subscription->payment->status !== 'paid'))
             <a href="{{ route('client.payment', $subscription->id) }}" class="bfh-btn" style="margin-bottom:14px">
                 Complete payment
             </a>
