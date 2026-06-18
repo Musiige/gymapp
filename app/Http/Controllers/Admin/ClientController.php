@@ -60,4 +60,42 @@ class ClientController extends Controller
             'client', 'attendance', 'changes', 'totalSessions', 'totalPaid'
         ));
     }
+    public function updateCorporate(Request $request, $id)
+    {
+        $request->validate([
+            'is_corporate' => ['required', 'boolean'],
+            'company_name' => ['nullable', 'required_if:is_corporate,1', 'string', 'max:100'],
+        ]);
+
+        $client = User::where('role', 'client')->findOrFail($id);
+
+        $client->update([
+            'is_corporate' => $request->is_corporate,
+            'company_name' => $request->is_corporate ? $request->company_name : null,
+        ]);
+
+        // If marking as corporate, create a free active subscription
+        if ($request->is_corporate) {
+            $corporateMembership = \App\Models\Membership::firstOrCreate(
+                ['name' => 'Corporate'],
+                ['price' => 0, 'duration_days' => 36500] // ~100 years, effectively no expiry
+            );
+
+            \App\Models\Subscription::where('user_id', $client->id)
+                ->whereNotIn('status', ['expired', 'changed'])
+                ->update(['status' => 'changed']);
+
+            \App\Models\Subscription::create([
+                'user_id' => $client->id,
+                'membership_id' => $corporateMembership->id,
+                'start_date' => now(),
+                'end_date' => now()->addYears(100),
+                'status' => 'active',
+            ]);
+        }
+
+        return back()->with('success', $request->is_corporate
+            ? $client->name . ' is now marked as a corporate client.'
+            : $client->name . ' corporate status removed.');
+    }
 }

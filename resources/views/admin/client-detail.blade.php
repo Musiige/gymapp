@@ -9,6 +9,37 @@
         </div>
     </div>
 
+    {{-- Corporate status --}}
+    <div class="bfh-card" style="margin-bottom:16px">
+        <p style="color:#666;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Account type</p>
+        <form method="POST" action="{{ route('admin.clients.corporate', $client->id) }}">
+            @csrf
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+                <select name="is_corporate" id="is_corporate" class="bfh-select" style="flex:1;min-width:140px" onchange="toggleCompanyField()">
+                    <option value="0" {{ !$client->is_corporate ? 'selected' : '' }}>Regular</option>
+                    <option value="1" {{ $client->is_corporate ? 'selected' : '' }}>Corporate</option>
+                </select>
+                <select name="company_name" id="company_name" class="bfh-select" style="flex:1;min-width:140px" {{ !$client->is_corporate ? 'disabled' : '' }}>
+                    <option value="">Select company</option>
+                    <option value="Abba Bet" {{ $client->company_name === 'Abba Bet' ? 'selected' : '' }}>Abba Bet</option>
+                    <option value="JB Medical Center" {{ $client->company_name === 'JB Medical Center' ? 'selected' : '' }}>JB Medical Center</option>
+                    <option value="Codebase" {{ $client->company_name === 'Codebase' ? 'selected' : '' }}>Codebase</option>
+                </select>
+            </div>
+            <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 16px">Save</button>
+        </form>
+        @if($client->is_corporate)
+            <p style="color:#4caf50;font-size:12px;margin-top:10px">✓ Corporate client — {{ $client->company_name }}</p>
+        @endif
+    </div>
+
+    <script>
+        function toggleCompanyField() {
+            const isCorporate = document.getElementById('is_corporate').value === '1';
+            document.getElementById('company_name').disabled = !isCorporate;
+        }
+    </script>
+
     {{-- Stats --}}
     <div class="bfh-stat-grid">
         <div class="bfh-stat">

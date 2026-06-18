@@ -110,6 +110,9 @@ Route::get('/admin/reports/payment-status', [App\Http\Controllers\Admin\ReportCo
     Route::get('/trainer/reports/attendance', [App\Http\Controllers\Trainer\DashboardController::class, 'attendanceHistory'])
     ->name('trainer.reports.attendance');
 
+    Route::post('/admin/clients/{id}/corporate', [App\Http\Controllers\Admin\ClientController::class, 'updateCorporate'])
+    ->name('admin.clients.corporate');
+
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])
