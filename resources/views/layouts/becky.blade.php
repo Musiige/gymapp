@@ -207,17 +207,19 @@ body.light *[style*="background:#2a2a2a;border-radius:50%"]{background:#e8e8e8 !
         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         <span>Plans</span>
     </a>
-    @php
-        $activeSubForNav = \App\Models\Subscription::where('user_id', Auth::id())
-            ->whereIn('status', ['active', 'pending'])
-            ->latest()
-            ->first();
-    @endphp
-    <a href="{{ $activeSubForNav ? route('client.payment', $activeSubForNav->id) : route('client.subscription') }}"
-        class="{{ request()->routeIs('client.payment*') ? 'active' : '' }}">
-        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-        <span>Pay</span>
-    </a>
+@php
+    $activeSubForNav = \App\Models\Subscription::where('user_id', Auth::id())
+        ->whereIn('status', ['active', 'pending'])
+        ->latest()
+        ->first();
+@endphp
+@if(!Auth::user()->is_corporate)
+<a href="{{ $activeSubForNav ? route('client.payment', $activeSubForNav->id) : route('client.subscription') }}"
+    class="{{ request()->routeIs('client.payment*') ? 'active' : '' }}">
+    <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+    <span>Pay</span>
+</a>
+@endif
    @php
     $unreadCount = Auth::check() && Auth::user()->role === 'client'
         ? \App\Http\Controllers\Client\InboxController::unreadCount()
