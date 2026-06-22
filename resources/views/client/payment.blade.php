@@ -5,18 +5,34 @@
         <p style="color:#777;font-size:13px;margin-top:4px">Secure mobile money payment</p>
     </div>
 
+    @if(session('success'))
+        <div style="background:#0a1a0a;border:0.5px solid #1a3a1a;border-radius:12px;padding:12px 16px;margin-bottom:16px">
+            <p style="color:#4ade80;font-size:13px">{{ session('success') }}</p>
+        </div>
+    @endif
+    @if(session('info'))
+        <div style="background:#1a160a;border:0.5px solid #3a2e0a;border-radius:12px;padding:12px 16px;margin-bottom:16px">
+            <p style="color:#FF6B00;font-size:13px">{{ session('info') }}</p>
+        </div>
+    @endif
+    @if(session('error'))
+        <div style="background:#1a0a0a;border:0.5px solid #3a0a0a;border-radius:12px;padding:12px 16px;margin-bottom:16px">
+            <p style="color:#ff4444;font-size:13px">{{ session('error') }}</p>
+        </div>
+    @endif
+
     <div class="bfh-section-title">Package summary</div>
     <div class="bfh-card orange-border" style="margin-bottom:20px">
         <div class="bfh-row">
             <div>
                 <p style="color:#fff;font-size:15px;font-weight:600">{{ $subscription->membership->name }}</p>
-                <p style="color:#FF6B00;font-size:18px;font-weight:700;margin-top:6px">UGX {{ number_format($subscription->membership->price) }}</p>
+                <p style="color:#FF6B00;font-size:18px;font-weight:700;margin-top:6px">UGX{{ number_format($subscription->membership->price) }}</p>
             </div>
             @if($payment)
                 <div style="text-align:right">
                     <span class="bfh-badge {{ $payment->status }}">{{ $payment->status }}</span>
                     <p style="color:#555;font-size:11px;margin-top:6px">Paid: UGX {{ number_format($payment->amount_paid) }}</p>
-                    <p style="color:#ff4444;font-size:11px;margin-top:2px">Balance: UGX {{ number_format($payment->balance) }}</p>
+                    <p style="color:#ff4444;font-size:11px;margin-top:2px">Balance: UGX {{number_format($payment->outstanding_balance) }}</p>
                 </div>
             @endif
         </div>
@@ -30,7 +46,55 @@
         </p>
     </div>
 
-    @if(!$payment || $payment->status !== 'paid')
+    @if($payment && $payment->status !== 'paid' && $payment->momo_status === 'pending')
+
+        {{-- Waiting for the client to approve the prompt on their phone --}}
+        <div class="bfh-card" style="text-align:center;padding:32px 16px" id="momo-waiting-card">
+            <p style="font-size:40px;margin-bottom:12px">📱</p>
+            <p style="color:#fff;font-size:16px;font-weight:700">Check your phone</p>
+            <p style="color:#777;font-size:13px;margin-top:6px;line-height:1.6">
+                We've sent a payment request to <strong style="color:#aaa">{{ $payment->user->phone ?? '' }}</strong>.
+                Approve it on your phone to complete the payment.
+            </p>
+            <p style="color:#555;font-size:11px;margin-top:16px" id="momo-waiting-status">Waiting for approval&hellip;</p>
+        </div>
+
+        <script>
+            (function () {
+                const statusUrl = "{{ route('client.payment.status', $subscription->id) }}";
+                const statusEl = document.getElementById('momo-waiting-status');
+                let attempts = 0;
+                const maxAttempts = 40; // ~2 minutes at 3s intervals
+
+                function poll() {
+                    attempts++;
+                    fetch(statusUrl, { headers: { 'Accept': 'application/json' } })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.momo_status === 'successful') {
+                                statusEl.textContent = 'Payment confirmed! Refreshing...';
+                                statusEl.style.color = '#4ade80';
+                                setTimeout(() => window.location.reload(), 1000);
+                            } else if (data.momo_status === 'failed') {
+                                statusEl.textContent = 'Payment was not completed. You can try again below.';
+                                statusEl.style.color = '#ff4444';
+                                setTimeout(() => window.location.reload(), 1800);
+                            } else if (attempts < maxAttempts) {
+                                setTimeout(poll, 3000);
+                            } else {
+                                statusEl.textContent = 'Still waiting. Refresh this page to check again.';
+                            }
+                        })
+                        .catch(() => {
+                            if (attempts < maxAttempts) setTimeout(poll, 4000);
+                        });
+                }
+
+                setTimeout(poll, 3000);
+            })();
+        </script>
+
+    @elseif(!$payment || $payment->status !== 'paid')
 
         <div class="bfh-section-title">Payment method</div>
         <form method="POST" action="{{ route('client.payment.process', $subscription->id) }}">
@@ -66,7 +130,7 @@
             <div class="bfh-form-group">
                 <label class="bfh-form-label">Amount to pay (UGX)</label>
                 <input type="number" name="amount"
-                    value="{{ old('amount', $payment ? $payment->balance : $subscription->membership->price) }}"
+                    value="{{ old('amount', $payment && $payment->outstanding_balance > 0 ? $payment->outstanding_balance : $subscription->membership->price) }}"
                     min="1000"
                     max="{{ $subscription->membership->price }}"
                     class="bfh-input">
@@ -89,7 +153,7 @@
 
         <script>
             function selectMethod(method) {
-                document.getElementById('momo-card').style.borderColor = method === 'momo' ? '#FF6B00' : '#2e2e2e';
+                document.getElementById('momo-card').style.borderColor = method === 'momo'? '#FF6B00' : '#2e2e2e';
                 document.getElementById('airtel-card').style.borderColor = method === 'airtel' ? '#FF6B00' : '#2e2e2e';
                 document.getElementById(method).checked = true;
             }

@@ -12,12 +12,6 @@
         ->latest()
         ->first();
 
-    // Auto-activate subscription if payment is complete
-    if ($subscription && $subscription->payment && $subscription->payment->balance == 0 && $subscription->status === 'pending') {
-        $subscription->update(['status' => 'active']);
-        $subscription->refresh();
-    }
-
     $workouts = \App\Models\WorkoutAssignment::where('client_id', Auth::id())
         ->with('workout.trainer')
         ->latest()
@@ -61,7 +55,7 @@
         <div class="bfh-stat">
             <div class="bfh-stat-label">Balance</div>
             <div class="bfh-stat-value grey">
-                UGX {{ number_format($subscription?->payment?->balance ?? ($subscription?->membership?->price ?? 0)) }}
+                UGX {{ number_format($subscription?->payment?->outstanding_balance ?? ($subscription?->membership?->price ?? 0)) }}
             </div>
             <div class="bfh-stat-sub">
                 {{ $subscription?->payment?->status === 'paid' ? 'Fully paid' : 'Outstanding' }}
@@ -187,7 +181,7 @@ $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
        @foreach($workouts as $assignment)
     <a href="{{ route('client.workout.show', $assignment->id) }}" style="text-decoration:none;display:block">
         <div class="bfh-card" style="display:flex;align-items:center;gap:14px">
-            <div class="bfh-icon-box">{{ strtoupper(substr($assignment->workout->title, 0, 1)) }}</div>
+            <div class="bfh-icon-box">{{ strtoupper(substr($assignment->workout->title, 0,1)) }}</div>
             <div style="flex:1;min-width:0">
                 <p style="color:#fff;font-size:14px;font-weight:600">{{ $assignment->workout->title }}</p>
                 <p style="color:#555;font-size:12px;margin-top:2px">by {{ $assignment->workout->trainer->name }}</p>

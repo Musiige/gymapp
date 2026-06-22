@@ -15,6 +15,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// MTN MoMo webhook — must stay OUTSIDE the 'auth' middleware group.
+// Protected instead by the {secret} segment (see MOMO_CALLBACK_SECRET in .env).
+Route::post('/momo/callback/{secret}', [App\Http\Controllers\Client\PaymentController::class, 'momoCallback'])
+    ->name('momo.callback');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -42,6 +47,10 @@ Route::post('/client/subscription', [App\Http\Controllers\Client\SubscriptionCon
 
 Route::post('/client/payment/{subscription}', [App\Http\Controllers\Client\PaymentController::class, 'process'])
     ->name('client.payment.process');
+
+// Polling fallback for MoMo Request-to-Pay status (used by client.payment view's JS)
+Route::get('/client/payment/{subscription}/status', [App\Http\Controllers\Client\PaymentController::class, 'checkStatus'])
+    ->name('client.payment.status');
 
 Route::get('/trainer/dashboard', [App\Http\Controllers\Trainer\DashboardController::class, 'index'])
     ->name('trainer.dashboard');
