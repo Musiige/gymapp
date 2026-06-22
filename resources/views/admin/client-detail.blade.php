@@ -141,6 +141,24 @@
     </div>
 @endif
 
+{{-- Access toggle --}}
+                @if(in_array($sub->status, ['active', 'pending']))
+                    <div style="display:flex;justify-content:space-between;align-items:center;background:#0a0a0a;border-radius:10px;padding:12px;margin-bottom:8px">
+                        <div>
+                            <p style="color:#666;font-size:11px;text-transform:uppercase;letter-spacing:1px">Gym access</p>
+                            <p style="font-size:13px;font-weight:600;margin-top:2px;color:{{ $sub->access_granted ? '#4caf50' : '#ff4444' }}">
+                                {{ $sub->access_granted ? '✓ Granted' : '✕ Not granted' }}
+                            </p>
+                        </div>
+                        <form method="POST" action="{{ route('admin.subscription.toggle-access', $sub->id) }}">
+                            @csrf
+                            <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 16px;
+                                {{ $sub->access_granted ? 'background:#3a1a1a;border:0.5px solid #ff4444;color:#ff4444' : 'background:#1a3a1a;border:0.5px solid #4caf50;color:#4caf50' }}">
+                                {{ $sub->access_granted ? 'Revoke Access' : 'Grant Access' }}
+                            </button>
+                        </form>
+                    </div>
+                @endif
                 {{-- Cash payment form for active/pending with outstanding balance --}}
                 @if(in_array($sub->status, ['active', 'pending']) && (!$sub->payment || $sub->payment->status !== 'paid'))
                     <div style="background:#0a0a0a;border-radius:10px;padding:12px;margin-top:4px">

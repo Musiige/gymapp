@@ -50,11 +50,20 @@ class PaymentController extends Controller
             ]
         );
 
-        if ($status === 'paid') {
-            $subscription->update(['status' => 'active']);
+ if ($status === 'paid') {
+            $subscription->update(['status' => 'active', 'access_granted' => true]);
         }
 
         return back()->with('success', 'Payment of UGX ' . number_format($amountPaid) . ' recorded successfully.');
+    }
+    public function toggleAccess($subscriptionId)
+    {
+        $subscription = Subscription::findOrFail($subscriptionId);
+        $subscription->update(['access_granted' => !$subscription->access_granted]);
+
+        return back()->with('success', $subscription->access_granted
+            ? 'Access granted to client.'
+            : 'Access revoked from client.');
     }
 
     public function setCustomPrice(Request $request, $subscriptionId)
@@ -81,7 +90,7 @@ class PaymentController extends Controller
                 'status'     => $status,
             ]);
             if ($status === 'paid') {
-                $subscription->update(['status' => 'active']);
+                $subscription->update(['status' => 'active', 'access_granted' => true]);
             }
         }
 
@@ -101,7 +110,7 @@ class PaymentController extends Controller
             'marked_by_admin_id'   => Auth::id(),
             'paid_at'              => null,
         ]);
-        $subscription->update(['status' => 'pending']);
+       $subscription->update(['status' => 'pending', 'access_granted' => false]);
     }
 
     return back()->with('success', 'Payment voided successfully.');
@@ -141,10 +150,10 @@ public function editPayment(Request $request, $subscriptionId)
         ]
     );
 
-    if ($status === 'paid') {
-        $subscription->update(['status' => 'active']);
+   if ($status === 'paid') {
+        $subscription->update(['status' => 'active', 'access_granted' => true]);
     } else {
-        $subscription->update(['status' => 'pending']);
+        $subscription->update(['status' => 'pending', 'access_granted' => false]);
     }
 
     return back()->with('success', 'Payment updated to UGX ' . number_format($amountPaid) . '.');

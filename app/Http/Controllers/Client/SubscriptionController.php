@@ -112,6 +112,10 @@ return redirect()->route('client.payment', $newSubscription->id)
         return back()->with('error', 'You need an active membership to check in.');
     }
 
+    if (!$activeSubscription->access_granted) {
+        return back()->with('error', 'Your gym access has not been activated yet. Please complete your payment or contact the front desk.');
+    }
+
    $already = \App\Models\Attendance::where('user_id', Auth::id())
     ->where('session_slot', $request->session_slot)
     ->whereDate('attended_at', today())

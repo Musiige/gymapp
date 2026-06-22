@@ -4,13 +4,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 class Subscription extends Model
 {
-   protected $fillable = [
+protected $fillable = [
     'user_id',
     'membership_id',
     'start_date',
     'end_date',
     'status',
     'custom_price',
+    'access_granted',
 ];
     public function user()
     {

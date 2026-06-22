@@ -128,6 +128,15 @@ Route::get('/admin/reports/payment-status', [App\Http\Controllers\Admin\ReportCo
     Route::get('/admin/reports/corporate/attendance', [App\Http\Controllers\Admin\ReportController::class, 'corporateAttendance'])
     ->name('admin.reports.corporate.attendance');
 
+    Route::post('/admin/subscription/{subscription}/toggle-access', [App\Http\Controllers\Admin\PaymentController::class, 'toggleAccess'])
+    ->name('admin.subscription.toggle-access');
+
+Route::post('/trainer/subscription/{subscription}/toggle-access', [App\Http\Controllers\Trainer\PaymentController::class, 'toggleAccess'])
+    ->name('trainer.subscription.toggle-access');
+
+    Route::get('/trainer/clients/{id}', [App\Http\Controllers\Trainer\ClientController::class, 'show'])
+    ->name('trainer.clients.show');
+
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])

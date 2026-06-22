@@ -26,4 +26,19 @@ class ClientController extends Controller
 
         return view('trainer.clients', compact('clients', 'search'));
     }
+    public function show($id)
+    {
+        $client = User::where('role', 'client')
+            ->with([
+                'subscriptions.membership',
+                'subscriptions.payment',
+            ])
+            ->findOrFail($id);
+
+        $attendance = \App\Models\Attendance::where('user_id', $id)
+            ->latest('attended_at')
+            ->get();
+
+        return view('trainer.client-detail', compact('client', 'attendance'));
+    }
 }

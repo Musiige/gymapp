@@ -49,10 +49,19 @@ class PaymentController extends Controller
             ]
         );
 
-        if ($status === 'paid') {
-            $subscription->update(['status' => 'active']);
+       if ($status === 'paid') {
+            $subscription->update(['status' => 'active', 'access_granted' => true]);
         }
 
         return back()->with('success', 'Payment of UGX ' . number_format($amountPaid) . ' recorded.');
+    }
+    public function toggleAccess($subscriptionId)
+    {
+        $subscription = Subscription::findOrFail($subscriptionId);
+        $subscription->update(['access_granted' => !$subscription->access_granted]);
+
+        return back()->with('success', $subscription->access_granted
+            ? 'Access granted to client.'
+            : 'Access revoked from client.');
     }
 }
