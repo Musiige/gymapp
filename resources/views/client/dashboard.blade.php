@@ -137,7 +137,7 @@ $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
 
 <div class="bfh-section-title" style="margin-top:8px">Check in</div>
 
-@if($subscription && $subscription->status === 'active')
+@if($subscription && $subscription->status === 'active' && $subscription->access_granted)
     @if($currentSession)
        @if($alreadyCheckedIn || $trainerMarked)
     <div class="bfh-card" style="text-align:center;padding:20px">
@@ -164,6 +164,11 @@ $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
             <p style="color:#444;font-size:12px;margin-top:4px">Sessions: 5:30–8am · 8am–3:30pm · 3:30–9pm</p>
         </div>
     @endif
+@elseif($subscription && $subscription->status === 'active' && !$subscription->access_granted)
+    <div class="bfh-card" style="text-align:center;padding:20px">
+        <p style="color:#FF6B00;font-size:14px;font-weight:600">⏳ Access pending</p>
+        <p style="color:#555;font-size:13px;margin-top:6px">Your payment is being processed. Please visit the front desk to complete payment and activate your access.</p>
+    </div>
 @else
     <div class="bfh-card" style="text-align:center;padding:20px">
         <p style="color:#555;font-size:13px">You need an active membership to check in.</p>
@@ -171,9 +176,13 @@ $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
     </div>
 @endif
 
-    <div class="bfh-section-title" style="margin-top:8px">My workouts</div>
+  <div class="bfh-section-title" style="margin-top:8px">My workouts</div>
 
-    @if($workouts->isEmpty())
+    @if(!$subscription || !$subscription->access_granted)
+        <div class="bfh-card">
+            <p style="color:#555;font-size:13px">Workouts will be visible once your gym access is activated.</p>
+        </div>
+    @elseif($workouts->isEmpty())
         <div class="bfh-card">
             <p style="color:#555;font-size:13px">No workouts assigned yet. Check back after your trainer sets one up.</p>
         </div>

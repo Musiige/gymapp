@@ -61,6 +61,18 @@ class WorkoutController extends Controller
 
         return back()->with('success', 'Workout assigned successfully.');
     }
+    public function unassign($assignmentId)
+    {
+        $assignment = WorkoutAssignment::with('workout')->findOrFail($assignmentId);
+
+        if ($assignment->workout->trainer_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $assignment->delete();
+
+        return back()->with('success', 'Workout removed from client.');
+    }
 
     public function edit($id)
     {

@@ -149,8 +149,8 @@ public function cancel($subscriptionId)
             return back()->with('error', 'This subscription cannot be cancelled.');
         }
 
-        if ($subscription->payment && $subscription->payment->amount_paid > 0) {
-            return back()->with('error', 'Cannot cancel a subscription that already has a payment recorded.');
+       if ($subscription->payment && $subscription->payment->amount_paid > 0) {
+            return back()->with('error', 'This subscription already has a payment recorded, so it cannot be cancelled. If you would like a different package, go to Plans and select a new one — your trainer or admin can help adjust your balance.');
         }
 
         $subscription->update(['status' => 'expired']);

@@ -32,29 +32,28 @@
                 <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px">
                     <div class="bfh-icon-box">{{ strtoupper(substr($workout->title, 0, 1)) }}</div>
                     <div style="flex:1">
-                        <p style="color:#fff;font-size:14px;font-weight:600">{{ $workout->title }}</p>
-                        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px">
-    <div class="bfh-icon-box">{{ strtoupper(substr($workout->title, 0, 1)) }}</div>
-    <div style="flex:1">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-            <p style="color:#fff;font-size:14px;font-weight:600">{{ $workout->title }}</p>
-            <a href="{{ route('trainer.workouts.edit', $workout->id) }}"
-                style="color:#FF6B00;font-size:12px;text-decoration:none;flex-shrink:0;margin-left:8px">
-                Edit ✎
-            </a>
-        </div>
-        <p style="color:#555;font-size:12px;margin-top:4px;line-height:1.5;white-space:pre-line">{{ $workout->description }}</p>
-    </div>
-</div>
-                        <p style="color:#555;font-size:12px;margin-top:4px;line-height:1.5">{{ $workout->description }}</p>
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <p style="color:#fff;font-size:14px;font-weight:600">{{ $workout->title }}</p>
+                            <a href="{{ route('trainer.workouts.edit', $workout->id) }}"
+                                style="color:#FF6B00;font-size:12px;text-decoration:none;flex-shrink:0;margin-left:8px">
+                                Edit ✎
+                            </a>
+                        </div>
+                        <p style="color:#555;font-size:12px;margin-top:4px;line-height:1.5;white-space:pre-line">{{ $workout->description }}</p>
                     </div>
                 </div>
 
                 @if($workout->assignments->isNotEmpty())
                     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
                         @foreach($workout->assignments as $assignment)
-                            <span style="background:#2a2a2a;color:#888;font-size:11px;padding:3px 10px;border-radius:20px">
+                            <span style="background:#2a2a2a;color:#888;font-size:11px;padding:3px 6px 3px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:6px">
                                 {{ $assignment->client->name }}
+                                <form method="POST" action="{{ route('trainer.workouts.unassign', $assignment->id) }}"
+                                    onsubmit="return confirm('Remove this workout from {{ $assignment->client->name }}?')" style="display:inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" style="background:none;border:none;color:#ff4444;font-size:13px;cursor:pointer;padding:0;line-height:1">✕</button>
+                                </form>
                             </span>
                         @endforeach
                     </div>
@@ -66,31 +65,31 @@
                     @csrf
                     <input type="hidden" name="workout_id" value="{{ $workout->id }}">
                     <div style="flex:1;position:relative">
-    <input type="text"
-        placeholder="Search client..."
-        oninput="filterSelect(this, 'select-{{ $workout->id }}')"
-        class="bfh-input" style="padding:10px 12px;margin-bottom:6px">
-    <select name="client_id" id="select-{{ $workout->id }}" class="bfh-select" style="padding:10px 12px">
-        <option value="">Select client</option>
-        @foreach($clients as $client)
-            <option value="{{ $client->id }}">{{ $client->name }} — {{ $client->phone }}</option>
-        @endforeach
-    </select>
-</div>
+                        <input type="text"
+                            placeholder="Search client..."
+                            oninput="filterSelect(this, 'select-{{ $workout->id }}')"
+                            class="bfh-input" style="padding:10px 12px;margin-bottom:6px">
+                        <select name="client_id" id="select-{{ $workout->id }}" class="bfh-select" style="padding:10px 12px">
+                            <option value="">Select client</option>
+                            @foreach($clients as $client)
+                                <option value="{{ $client->id }}">{{ $client->name }} — {{ $client->phone }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <button type="submit" class="bfh-btn sm" style="width:auto;padding:10px 16px;white-space:nowrap">Assign</button>
                 </form>
             </div>
         @endforeach
     @endif
-    
-<script>
-    function filterSelect(input, selectId) {
-        const select = document.getElementById(selectId);
-        const filter = input.value.toLowerCase();
-        Array.from(select.options).forEach(option => {
-            if (option.value === '') return;
-            option.style.display = option.text.toLowerCase().includes(filter) ? '' : 'none';
-        });
-    }
-</script>
+
+    <script>
+        function filterSelect(input, selectId) {
+            const select = document.getElementById(selectId);
+            const filter = input.value.toLowerCase();
+            Array.from(select.options).forEach(option => {
+                if (option.value === '') return;
+                option.style.display = option.text.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        }
+    </script>
 </x-becky-layout>

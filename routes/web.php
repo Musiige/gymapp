@@ -137,6 +137,8 @@ Route::post('/trainer/subscription/{subscription}/toggle-access', [App\Http\Cont
     Route::get('/trainer/clients/{id}', [App\Http\Controllers\Trainer\ClientController::class, 'show'])
     ->name('trainer.clients.show');
 
+    Route::delete('/trainer/workouts/assignment/{id}', [App\Http\Controllers\Trainer\WorkoutController::class, 'unassign'])
+    ->name('trainer.workouts.unassign');
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])

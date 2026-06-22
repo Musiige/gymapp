@@ -11,12 +11,17 @@ class InboxController extends Controller
 {
     public function index()
     {
-        $messages = Announcement::where(function ($q) {
-            $q->where('recipient_type', 'all')
-              ->orWhere(function ($q) {
-                  $q->where('recipient_type', 'specific')
-                    ->whereJsonContains('recipient_ids', (string) Auth::id());
-              });
+      $userCreatedAt = Auth::user()->created_at;
+
+        $messages = Announcement::where(function ($q) use ($userCreatedAt) {
+            $q->where(function ($q) use ($userCreatedAt) {
+                $q->where('recipient_type', 'all')
+                  ->where('created_at', '>=', $userCreatedAt);
+            })
+            ->orWhere(function ($q) {
+                $q->where('recipient_type', 'specific')
+                  ->whereJsonContains('recipient_ids', (string) Auth::id());
+            });
         })
         ->with(['reads' => function ($q) {
             $q->where('user_id', Auth::id());
@@ -38,16 +43,20 @@ class InboxController extends Controller
         return view('client.inbox', compact('messages'));
     }
 
-    public static function unreadCount()
+  public static function unreadCount()
     {
         $userId = Auth::id();
+        $userCreatedAt = Auth::user()->created_at;
 
-        return Announcement::where(function ($q) use ($userId) {
-            $q->where('recipient_type', 'all')
-              ->orWhere(function ($q) use ($userId) {
-                  $q->where('recipient_type', 'specific')
-                    ->whereJsonContains('recipient_ids', (string) $userId);
-              });
+        return Announcement::where(function ($q) use ($userId, $userCreatedAt) {
+            $q->where(function ($q) use ($userCreatedAt) {
+                $q->where('recipient_type', 'all')
+                  ->where('created_at', '>=', $userCreatedAt);
+            })
+            ->orWhere(function ($q) use ($userId) {
+                $q->where('recipient_type', 'specific')
+                  ->whereJsonContains('recipient_ids', (string) $userId);
+            });
         })
         ->whereDoesntHave('reads', function ($q) use ($userId) {
             $q->where('user_id', $userId);
