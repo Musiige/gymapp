@@ -1,62 +1,53 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+    <div style="max-width:400px;margin:60px auto;padding:32px 24px;background:#1e1e1e;border:0.5px solid #2e2e2e;border-radius:16px">
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        <div style="text-align:center;margin-bottom:28px">
+            <p style="color:#FF6B00;font-size:18px;font-weight:800;letter-spacing:2px;text-transform:uppercase">Becky</p>
+            <p style="color:#777;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-top:2px">Fitness Hub</p>
         </div>
 
-        <!-- Phone -->
-<div class="mt-4">
-    <x-input-label for="phone" :value="__('Phone Number')" />
-    <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" required autocomplete="tel" placeholder="e.g. 0771234567" />
-    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-</div>
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
 
-<!-- Role is always client for public registration -->
-<input type="hidden" name="role" value="client">
+            <div class="bfh-form-group">
+                <label class="bfh-form-label">Full Name</label>
+                <input type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" class="bfh-input">
+                @error('name')<p class="bfh-error">{{ $message }}</p>@enderror
+            </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+            <div class="bfh-form-group">
+                <label class="bfh-form-label">Phone Number</label>
+                <input type="text" name="phone" value="{{ old('phone') }}" required autocomplete="tel" placeholder="e.g. 0771234567" class="bfh-input">
+                @error('phone')<p class="bfh-error">{{ $message }}</p>@enderror
+            </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <input type="hidden" name="role" value="client">
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+            <div class="bfh-form-group">
+                <label class="bfh-form-label">Email</label>
+                <input type="email" name="email" value="{{ old('email') }}" required autocomplete="username" class="bfh-input">
+                @error('email')<p class="bfh-error">{{ $message }}</p>@enderror
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            <div class="bfh-form-group">
+                <label class="bfh-form-label">Password</label>
+                <input type="password" name="password" required autocomplete="new-password" class="bfh-input">
+                @error('password')<p class="bfh-error">{{ $message }}</p>@enderror
+            </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <div class="bfh-form-group">
+                <label class="bfh-form-label">Confirm Password</label>
+                <input type="password" name="password_confirmation" required autocomplete="new-password" class="bfh-input">
+                @error('password_confirmation')<p class="bfh-error">{{ $message }}</p>@enderror
+            </div>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+            <button type="submit" class="bfh-btn" style="margin-top:8px">Create Account</button>
+        </form>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+        <p style="text-align:center;color:#555;font-size:12px;margin-top:20px">
+            Already have an account?
+            <a href="{{ route('login') }}" style="color:#FF6B00;text-decoration:none">Log in</a>
+        </p>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
+    </div>
 </x-guest-layout>
