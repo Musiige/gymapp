@@ -160,6 +160,30 @@ Route::get('/admin/clients/{id}/attendance', [App\Http\Controllers\Admin\ClientC
 
     Route::get('/admin/clients/{id}/changes', [App\Http\Controllers\Admin\ClientController::class, 'changes'])
     ->name('admin.clients.changes');
+
+    Route::get('/trainer/allowances', [App\Http\Controllers\Trainer\AllowanceController::class, 'index'])
+    ->name('trainer.allowances');
+
+Route::post('/trainer/allowances', [App\Http\Controllers\Trainer\AllowanceController::class, 'store'])
+    ->name('trainer.allowances.store');
+
+Route::put('/trainer/allowances/{id}', [App\Http\Controllers\Trainer\AllowanceController::class, 'update'])
+    ->name('trainer.allowances.update');
+
+Route::delete('/trainer/allowances/{id}', [App\Http\Controllers\Trainer\AllowanceController::class, 'destroy'])
+    ->name('trainer.allowances.destroy');
+
+    Route::get('/trainer/allowances/history', [App\Http\Controllers\Trainer\AllowanceController::class, 'history'])
+    ->name('trainer.allowances.history');
+
+    Route::delete('/trainer/allowances/delete-all', [App\Http\Controllers\Trainer\AllowanceController::class, 'destroyAll'])
+    ->name('trainer.allowances.destroy-all');
+
+    Route::get('/admin/allowances', [App\Http\Controllers\Admin\AllowanceController::class, 'index'])
+    ->name('admin.allowances');
+
+Route::get('/admin/allowances/{trainerId}', [App\Http\Controllers\Admin\AllowanceController::class, 'show'])
+    ->name('admin.allowances.show');
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])

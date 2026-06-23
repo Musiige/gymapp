@@ -67,4 +67,13 @@
         <span style="color:#444;font-size:20px">›</span>
     </a>
 
+    <a href="{{ route('trainer.allowances') }}" class="bfh-card" style="display:flex;align-items:center;gap:14px;text-decoration:none;margin-bottom:12px">
+        <div class="bfh-icon-box">💰</div>
+        <div style="flex:1">
+            <p style="color:#fff;font-size:15px;font-weight:600">My Allowances</p>
+            <p style="color:#555;font-size:12px;margin-top:2px">Track money owed and received</p>
+        </div>
+        <span style="color:#444;font-size:20px">›</span>
+    </a>
+
 </x-becky-layout>
