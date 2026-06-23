@@ -23,14 +23,19 @@
         </div>
     </div>
 
-    {{-- Subscription history --}}
-    <div class="bfh-section-title">Subscription history</div>
+   {{-- Current subscription --}}
+    <div class="bfh-section-title">Current subscription</div>
+    @php
+        $sortedSubs = $client->subscriptions->sortByDesc('created_at');
+        $currentSub = $sortedSubs->first();
+        $olderSubs = $sortedSubs->skip(1);
+    @endphp
     @if($client->subscriptions->isEmpty())
         <div class="bfh-card" style="text-align:center;padding:20px;margin-bottom:16px">
             <p style="color:#555;font-size:13px">No subscriptions yet.</p>
         </div>
     @else
-        @foreach($client->subscriptions->sortByDesc('created_at') as $sub)
+        @php $sub = $currentSub; @endphp
             <div class="bfh-card" style="margin-bottom:10px">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
                     <p style="color:#fff;font-size:14px;font-weight:600">{{ $sub->membership->name }}</p>
@@ -98,18 +103,51 @@
                         <p style="color:#4caf50;font-size:12px;font-weight:600">✓ Fully paid — UGX {{ number_format($sub->payment->amount_paid) }}</p>
                     </div>
                 @endif
-            </div>
+           </div>
+    @endif
+
+   {{-- Previous subscriptions link --}}
+    @if($olderSubs->isNotEmpty())
+        <a href="{{ route('trainer.clients.subscriptions', $client->id) }}" class="bfh-card" style="display:flex;justify-content:space-between;align-items:center;text-decoration:none;margin-top:8px">
+            <p style="color:#aaa;font-size:13px;font-weight:600">Previous subscriptions ({{ $olderSubs->count() }})</p>
+            <span style="color:#444;font-size:18px">›</span>
+        </a>
+    @endif
+
+   {{-- Assigned workouts --}}
+    <div class="bfh-section-title" style="margin-top:8px">Assigned workouts ({{ $client->workoutAssignments->count() }})</div>
+    @if($client->workoutAssignments->isEmpty())
+        <div class="bfh-card" style="text-align:center;padding:20px">
+            <p style="color:#555;font-size:13px">No workouts assigned yet.</p>
+        </div>
+    @else
+       @foreach($client->workoutAssignments as $assignment)
+           <a href="{{ route('trainer.workouts.show', $assignment->workout->id) }}" style="text-decoration:none">
+                <div class="bfh-card" style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+                    <div class="bfh-icon-box">{{ strtoupper(substr($assignment->workout->title, 0, 1)) }}</div>
+                    <div style="flex:1">
+                        <p style="color:#fff;font-size:13px;font-weight:600">{{ $assignment->workout->title }}</p>
+                        <p style="color:#555;font-size:11px;margin-top:2px">by {{ $assignment->workout->trainer->name }}</p>
+                    </div>
+                    <span style="color:#444;font-size:18px">›</span>
+                </div>
+            </a>
         @endforeach
     @endif
 
-    {{-- Attendance history --}}
-    <div class="bfh-section-title">Attendance history ({{ $attendance->count() }})</div>
+   {{-- Attendance history (recent 5) --}}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="bfh-section-title" style="margin-bottom:0">Recent attendance ({{ $attendance->count() }} total)</div>
+        @if($attendance->count() > 5)
+            <a href="{{ route('trainer.clients.attendance', $client->id) }}" style="color:#FF6B00;font-size:11px;text-decoration:none;font-weight:600">View all →</a>
+        @endif
+    </div>
     @if($attendance->isEmpty())
         <div class="bfh-card" style="text-align:center;padding:20px">
             <p style="color:#555;font-size:13px">No attendance recorded yet.</p>
         </div>
     @else
-        @foreach($attendance as $record)
+        @foreach($attendance->take(5) as $record)
             <div class="bfh-card" style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
                 <div style="width:36px;height:36px;background:#2a2a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">
                     {{ $record->session_slot === 'morning' ? '🌅' : ($record->session_slot === 'midday' ? '☀️' : '🌙') }}

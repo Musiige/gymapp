@@ -23,6 +23,13 @@ class WorkoutController extends Controller
         return view('trainer.workouts', compact('workouts', 'clients'));
     }
 
+    public function show($id)
+    {
+        $workout = Workout::with(['trainer', 'assignments.client'])->findOrFail($id);
+
+        return view('trainer.workout-detail', compact('workout'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([

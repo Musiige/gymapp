@@ -142,6 +142,15 @@ Route::post('/trainer/subscription/{subscription}/toggle-access', [App\Http\Cont
 
     Route::delete('/admin/announcements/{id}', [App\Http\Controllers\Admin\AnnouncementController::class, 'destroy'])
     ->name('admin.announcements.destroy');
+
+    Route::get('/trainer/clients/{id}/subscriptions', [App\Http\Controllers\Trainer\ClientController::class, 'subscriptions'])
+    ->name('trainer.clients.subscriptions');
+
+    Route::get('/trainer/clients/{id}/attendance', [App\Http\Controllers\Trainer\ClientController::class, 'attendance'])
+    ->name('trainer.clients.attendance');
+
+    Route::get('/trainer/workouts/{id}/view', [App\Http\Controllers\Trainer\WorkoutController::class, 'show'])
+    ->name('trainer.workouts.show');
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])
