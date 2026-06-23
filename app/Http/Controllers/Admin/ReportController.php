@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Subscription;
 
 class ReportController extends Controller
 {
@@ -150,5 +151,25 @@ class ReportController extends Controller
         $records = $query->orderByDesc('attended_at')->get();
 
         return view('admin.reports.corporate-attendance', compact('records', 'company', 'period', 'slot', 'month'));
+    }
+public function subscriptions(Request $request)
+    {
+        $search = $request->get('search');
+
+        $subscriptions = Subscription::with(['user', 'membership', 'payment'])
+            ->whereIn('id', function ($query) {
+                $query->selectRaw('MAX(id)')->from('subscriptions')->groupBy('user_id');
+            })
+            ->when($search, function ($q) use ($search) {
+                $q->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->appends(['search' => $search]);
+
+        return view('admin.reports.subscriptions', compact('subscriptions', 'search'));
     }
 }

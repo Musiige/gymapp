@@ -184,6 +184,11 @@ Route::delete('/trainer/allowances/{id}', [App\Http\Controllers\Trainer\Allowanc
 
 Route::get('/admin/allowances/{trainerId}', [App\Http\Controllers\Admin\AllowanceController::class, 'show'])
     ->name('admin.allowances.show');
+
+    Route::get('/admin/reports/subscriptions', [App\Http\Controllers\Admin\ReportController::class, 'subscriptions'])
+    ->name('admin.reports.subscriptions');
+    Route::get('/trainer/inbox', [App\Http\Controllers\Trainer\InboxController::class, 'index'])
+    ->name('trainer.inbox');
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])

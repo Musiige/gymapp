@@ -246,6 +246,9 @@ body.light *[style*="background:#2a2a2a;border-radius:50%"]{background:#e8e8e8 !
 </nav>
 
 @elseif($role === 'trainer')
+@php
+    $trainerUnreadCount = \App\Http\Controllers\Trainer\InboxController::unreadCount();
+@endphp
 <nav class="bfh-nav">
     <a href="{{ route('trainer.dashboard') }}" class="{{ request()->routeIs('trainer.dashboard') ? 'active' : '' }}">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -263,8 +266,16 @@ body.light *[style*="background:#2a2a2a;border-radius:50%"]{background:#e8e8e8 !
         <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
         <span>Workouts</span>
     </a>
+    <a href="{{ route('trainer.inbox') }}" class="{{ request()->routeIs('trainer.inbox') ? 'active' : '' }}" style="position:relative">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        @if($trainerUnreadCount > 0)
+            <span style="position:absolute;top:-4px;right:-2px;background:#FF6B00;color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1">
+                {{ $trainerUnreadCount > 9 ? '9+' : $trainerUnreadCount }}
+            </span>
+        @endif
+        <span>Inbox</span>
+    </a>
 </nav>
-
 @elseif($role === 'admin')
 <nav class="bfh-nav">
     <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">

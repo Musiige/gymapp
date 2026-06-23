@@ -17,15 +17,15 @@
                         <input type="radio" name="recipient" value="all" checked style="display:none" id="radio-all">
                         <div id="card-all" class="bfh-card orange-border" style="margin-bottom:0;text-align:center;padding:12px">
                             <p style="font-size:20px;margin-bottom:4px">📢</p>
-                            <p style="color:#fff;font-size:13px;font-weight:600">All Clients</p>
-                            <p style="color:#555;font-size:11px;margin-top:2px">{{ $clients->count() }} with notifications</p>
+                            <p style="color:#fff;font-size:13px;font-weight:600">Everyone</p>
+                            <p style="color:#555;font-size:11px;margin-top:2px">{{ $clients->count() }} clients & trainers</p>
                         </div>
                     </label>
                     <label style="cursor:pointer" onclick="toggleRecipient('specific')">
                         <input type="radio" name="recipient" value="specific" style="display:none" id="radio-specific">
                         <div id="card-specific" class="bfh-card" style="margin-bottom:0;text-align:center;padding:12px;border-color:#2e2e2e">
                             <p style="font-size:20px;margin-bottom:4px">👥</p>
-                            <p style="color:#fff;font-size:13px;font-weight:600">Specific Clients</p>
+                            <p style="color:#fff;font-size:13px;font-weight:600">Specific People</p>
                             <p style="color:#555;font-size:11px;margin-top:2px">Choose one or more</p>
                         </div>
                     </label>
@@ -43,7 +43,7 @@
                     oninput="filterClients(this.value)">
 
                 {{-- Client checkboxes --}}
-                <div id="client-list" style="background:#0a0a0a;border-radius:10px;padding:12px;max-height:300px;overflow-y:auto">
+               <div id="client-list" style="background:#0a0a0a;border-radius:10px;padding:12px;max-height:300px;overflow-y:auto">
                     @foreach($clients as $client)
                         <label id="client-item-{{ $client->id }}"
                             style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer;margin-bottom:4px">
@@ -53,6 +53,9 @@
                                 <p style="color:#fff;font-size:13px;font-weight:500">{{ $client->name }}</p>
                                 <p style="color:#555;font-size:11px">{{ $client->phone }}</p>
                             </div>
+                            <span class="bfh-badge {{ $client->role === 'trainer' ? 'trainer' : 'client' }}" style="font-size:9px;padding:2px 8px">
+                                {{ $client->role }}
+                            </span>
                         </label>
                     @endforeach
                 </div>

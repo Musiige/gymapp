@@ -11,15 +11,15 @@ use App\Models\Announcement;
 
 class AnnouncementController extends Controller
 {
- public function index()
+public function index()
     {
-        $clients = User::where('role', 'client')->get();
+        $clients = User::whereIn('role', ['client', 'trainer'])->get();
         $sentAnnouncements = Announcement::latest()->get();
 
         return view('admin.announcements', compact('clients', 'sentAnnouncements'));
     }
 
-    public function send(Request $request, NotificationService $notificationService)
+   public function send(Request $request, NotificationService $notificationService)
 {
     $request->validate([
         'title'     => ['required', 'string', 'max:100'],
@@ -31,7 +31,7 @@ class AnnouncementController extends Controller
         $clientIds = $request->input('client_ids', []);
 
         if (empty($clientIds)) {
-            return back()->with('error', 'Please select at least one client.');
+            return back()->with('error', 'Please select at least one recipient.');
         }
 
         \App\Models\Announcement::create([
@@ -42,15 +42,15 @@ class AnnouncementController extends Controller
             'recipient_ids'  => $clientIds,
         ]);
 
-        $clients = User::whereIn('id', $clientIds)
+        $recipients = User::whereIn('id', $clientIds)
             ->whereNotNull('fcm_token')
             ->get();
 
-        foreach ($clients as $client) {
-            $notificationService->sendToToken($client->fcm_token, $request->title, $request->message);
+        foreach ($recipients as $recipient) {
+            $notificationService->sendToToken($recipient->fcm_token, $request->title, $request->message);
         }
 
-        return back()->with('success', 'Message sent to ' . count($clientIds) . ' client(s).');
+        return back()->with('success', 'Message sent to ' . count($clientIds) . ' recipient(s).');
     }
 
     \App\Models\Announcement::create([
@@ -61,19 +61,21 @@ class AnnouncementController extends Controller
         'recipient_ids'  => null,
     ]);
 
-    $tokens = User::where('role', 'client')
+    $tokens = User::whereIn('role', ['client', 'trainer'])
         ->whereNotNull('fcm_token')
         ->pluck('fcm_token')
         ->toArray();
 
+    $totalRecipients = User::whereIn('role', ['client', 'trainer'])->count();
+
     if (empty($tokens)) {
-        return back()->with('error', 'No clients have enabled notifications yet.');
+        return back()->with('success', 'Announcement saved. Sent to ' . $totalRecipients . ' recipient(s), though none have notifications enabled yet.');
     }
 
-    $notificationService->sendToMultiple($tokens, $request->title, $request->message);
-    $totalClients = User::where('role', 'client')->count();
-return back()->with('success', 'Announcement sent to ' . $totalClients . ' clients.');
+   $notificationService->sendToMultiple($tokens, $request->title, $request->message);
+    return back()->with('success', 'Announcement sent to ' . $totalRecipients . ' recipient(s).');
 }
+
 public function destroy($id)
     {
         $announcement = Announcement::findOrFail($id);
