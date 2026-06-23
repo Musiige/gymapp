@@ -139,6 +139,9 @@ Route::post('/trainer/subscription/{subscription}/toggle-access', [App\Http\Cont
 
     Route::delete('/trainer/workouts/assignment/{id}', [App\Http\Controllers\Trainer\WorkoutController::class, 'unassign'])
     ->name('trainer.workouts.unassign');
+
+    Route::delete('/admin/announcements/{id}', [App\Http\Controllers\Admin\AnnouncementController::class, 'destroy'])
+    ->name('admin.announcements.destroy');
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])

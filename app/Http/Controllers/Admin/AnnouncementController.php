@@ -11,11 +11,12 @@ use App\Models\Announcement;
 
 class AnnouncementController extends Controller
 {
-    public function index()
+ public function index()
     {
-       $clients = User::where('role', 'client')->get();
+        $clients = User::where('role', 'client')->get();
+        $sentAnnouncements = Announcement::latest()->get();
 
-        return view('admin.announcements', compact('clients'));
+        return view('admin.announcements', compact('clients', 'sentAnnouncements'));
     }
 
     public function send(Request $request, NotificationService $notificationService)
@@ -73,4 +74,11 @@ class AnnouncementController extends Controller
     $totalClients = User::where('role', 'client')->count();
 return back()->with('success', 'Announcement sent to ' . $totalClients . ' clients.');
 }
+public function destroy($id)
+    {
+        $announcement = Announcement::findOrFail($id);
+        $announcement->delete();
+
+        return back()->with('success', 'Announcement deleted successfully.');
+    }
 }

@@ -45,6 +45,10 @@
         .bfh-input:focus{border-color:#FF6B00}
         .bfh-input::placeholder{color:#555}
         .bfh-input:disabled{opacity:0.4;cursor:not-allowed}
+        input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);cursor:pointer;opacity:0.8}
+input[type="date"]::-webkit-calendar-picker-indicator:hover{opacity:1}
+body.light input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0);opacity:0.6}
+body.light input[type="date"]::-webkit-calendar-picker-indicator:hover{opacity:1}
         .bfh-select{background:#1e1e1e;border:0.5px solid #2e2e2e;border-radius:10px;padding:13px 14px;width:100%;color:#fff;font-size:14px;outline:none;appearance:none;font-family:'Figtree',sans-serif}
         .bfh-select:focus{border-color:#FF6B00}
         .bfh-form-group{margin-bottom:16px}

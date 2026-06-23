@@ -2,13 +2,18 @@
 
     <div style="margin-bottom:24px">
         <a href="{{ route('admin.dashboard') }}" style="color:#555;font-size:13px;text-decoration:none">← Back to dashboard</a>
-        <h2 style="color:#fff;font-size:22px;font-weight:800;margin-top:8px">
+      <h2 style="color:#fff;font-size:22px;font-weight:800;margin-top:8px">
             Attendance <span style="color:#FF6B00">Report</span>
         </h2>
+        @if($filter === 'date')
+            <p style="color:#777;font-size:13px;margin-top:4px">Showing {{ \Carbon\Carbon::parse($date)->format('d M Y') }}</p>
+        @elseif($filter === 'month' && $month)
+            <p style="color:#777;font-size:13px;margin-top:4px">Showing {{ \Carbon\Carbon::createFromFormat('Y-m', $month)->format('F Y') }}</p>
+        @endif
     </div>
 
-    {{-- Filter tabs --}}
-    <div style="display:flex;gap:6px;margin-bottom:20px">
+  {{-- Filter tabs --}}
+    <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
         @foreach(['week' => 'This Week', 'month' => 'This Month'] as $val => $label)
             <a href="?filter={{ $val }}"
                style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;
@@ -16,6 +21,14 @@
                 {{ $label }}
             </a>
         @endforeach
+    </div>
+
+   {{-- Specific date picker --}}
+    <div style="margin-bottom:20px">
+        <form method="GET">
+            <label class="bfh-form-label" style="display:block;margin-bottom:6px">Pick a specific day</label>
+            <input type="date" name="date" value="{{ $date }}" class="bfh-input" onchange="this.form.submit()">
+        </form>
     </div>
 
     {{-- Total --}}

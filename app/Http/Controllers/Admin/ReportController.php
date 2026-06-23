@@ -32,13 +32,22 @@ class ReportController extends Controller
         return view('admin.reports.revenue', compact('payments', 'total', 'filter'));
     }
 
-    public function attendance(Request $request)
+  public function attendance(Request $request)
     {
         $filter = $request->get('filter', 'week');
+        $date = $request->get('date'); // specific day, e.g. 2026-06-15
+        $month = $request->get('month'); // specific month, e.g. 2026-06
 
         $query = Attendance::with('client');
 
-        if ($filter === 'week') {
+        if ($date) {
+            $query->whereDate('attended_at', $date);
+            $filter = 'date';
+        } elseif ($month) {
+            $monthDate = \Carbon\Carbon::createFromFormat('Y-m', $month);
+            $query->whereMonth('attended_at', $monthDate->month)->whereYear('attended_at', $monthDate->year);
+            $filter = 'month';
+        } elseif ($filter === 'week') {
             $query->whereBetween('attended_at', [now()->startOfWeek(), now()->endOfWeek()]);
         } elseif ($filter === 'month') {
             $query->whereMonth('attended_at', now()->month)->whereYear('attended_at', now()->year);
@@ -49,7 +58,7 @@ class ReportController extends Controller
             return \Carbon\Carbon::parse($r->attended_at)->format('d M Y');
         });
 
-        return view('admin.reports.attendance', compact('grouped', 'filter'));
+        return view('admin.reports.attendance', compact('grouped', 'filter', 'date', 'month'));
     }
 
     public function paymentStatus(Request $request)

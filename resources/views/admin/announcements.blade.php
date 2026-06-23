@@ -88,6 +88,39 @@
         </form>
     </div>
 
+    {{-- Sent announcements --}}
+    <div class="bfh-section-title" style="margin-top:24px">Sent announcements ({{ $sentAnnouncements->count() }})</div>
+    @if($sentAnnouncements->isEmpty())
+        <div class="bfh-card" style="text-align:center;padding:20px">
+            <p style="color:#555;font-size:13px">No announcements sent yet.</p>
+        </div>
+    @else
+        @foreach($sentAnnouncements as $announcement)
+            <div class="bfh-card" style="margin-bottom:10px">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px">
+                    <div style="flex:1">
+                        <p style="color:#fff;font-size:14px;font-weight:600">{{ $announcement->title }}</p>
+                        <p style="color:#888;font-size:12px;margin-top:4px;line-height:1.5">{{ $announcement->message }}</p>
+                    </div>
+                    <form method="POST" action="{{ route('admin.announcements.destroy', $announcement->id) }}"
+                        onsubmit="return confirm('Delete this announcement? It will be removed from all client inboxes.')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" style="background:#3a1a1a;border:0.5px solid #ff4444;color:#ff4444;padding:6px 10px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:0.5px solid #222">
+                    <span class="bfh-badge {{ $announcement->recipient_type === 'all' ? 'active' : 'changed' }}">
+                        {{ $announcement->recipient_type === 'all' ? 'All clients' : count($announcement->recipient_ids ?? []) . ' specific' }}
+                    </span>
+                    <p style="color:#555;font-size:11px">{{ $announcement->created_at->format('d M Y, h:i A') }}</p>
+                </div>
+            </div>
+        @endforeach
+    @endif
+
     <script>
         function toggleRecipient(value) {
             document.getElementById('radio-' + value).checked = true;
