@@ -151,6 +151,15 @@ Route::post('/trainer/subscription/{subscription}/toggle-access', [App\Http\Cont
 
     Route::get('/trainer/workouts/{id}/view', [App\Http\Controllers\Trainer\WorkoutController::class, 'show'])
     ->name('trainer.workouts.show');
+
+    Route::get('/admin/clients/{id}/subscriptions', [App\Http\Controllers\Admin\ClientController::class, 'subscriptions'])
+    ->name('admin.clients.subscriptions');
+
+Route::get('/admin/clients/{id}/attendance', [App\Http\Controllers\Admin\ClientController::class, 'attendance'])
+    ->name('admin.clients.attendance');
+
+    Route::get('/admin/clients/{id}/changes', [App\Http\Controllers\Admin\ClientController::class, 'changes'])
+    ->name('admin.clients.changes');
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])

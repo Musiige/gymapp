@@ -37,10 +37,11 @@ class ClientController extends Controller
 
     public function show($id)
     {
-        $client = User::where('role', 'client')
+     $client = User::where('role', 'client')
             ->with([
                 'subscriptions.membership',
                 'subscriptions.payment',
+                'workoutAssignments.workout.trainer',
             ])
             ->findOrFail($id);
 
@@ -62,6 +63,44 @@ class ClientController extends Controller
         return view('admin.client-detail', compact(
             'client', 'attendance', 'changes', 'totalSessions', 'totalPaid'
         ));
+    }
+
+    public function subscriptions($id)
+    {
+        $client = User::where('role', 'client')
+            ->with(['subscriptions.membership', 'subscriptions.payment'])
+            ->findOrFail($id);
+
+        $subscriptions = $client->subscriptions->sortByDesc('created_at');
+
+        return view('admin.client-subscriptions', compact('client', 'subscriptions'));
+    }
+
+    public function attendance($id)
+    {
+        $client = User::where('role', 'client')->findOrFail($id);
+
+        $records = Attendance::where('user_id', $id)
+            ->with('trainer')
+            ->orderByDesc('attended_at')
+            ->get();
+
+        $grouped = $records->groupBy(function ($r) {
+            return \Carbon\Carbon::parse($r->attended_at)->format('d M Y');
+        });
+
+        return view('admin.client-attendance', compact('client', 'grouped'));
+    }
+    public function changes($id)
+    {
+        $client = User::where('role', 'client')->findOrFail($id);
+
+        $changes = SubscriptionChange::where('user_id', $id)
+            ->with(['oldMembership', 'newMembership'])
+            ->latest('changed_at')
+            ->get();
+
+        return view('admin.client-changes', compact('client', 'changes'));
     }
     public function updateCorporate(Request $request, $id)
     {
