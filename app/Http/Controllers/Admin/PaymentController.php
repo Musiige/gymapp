@@ -56,12 +56,17 @@ class PaymentController extends Controller
 
         return back()->with('success', 'Payment of UGX ' . number_format($amountPaid) . ' recorded successfully.');
     }
-    public function toggleAccess($subscriptionId)
+   public function toggleAccess($subscriptionId)
     {
         $subscription = Subscription::findOrFail($subscriptionId);
-        $subscription->update(['access_granted' => !$subscription->access_granted]);
+        $newAccessState = !$subscription->access_granted;
 
-        return back()->with('success', $subscription->access_granted
+        $subscription->update([
+            'access_granted' => $newAccessState,
+            'status' => $newAccessState ? 'active' : $subscription->status,
+        ]);
+
+        return back()->with('success', $newAccessState
             ? 'Access granted to client.'
             : 'Access revoked from client.');
     }
