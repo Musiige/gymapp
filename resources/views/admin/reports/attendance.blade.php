@@ -27,7 +27,10 @@
     <div style="margin-bottom:20px">
         <form method="GET">
             <label class="bfh-form-label" style="display:block;margin-bottom:6px">Pick a specific day</label>
-            <input type="date" name="date" value="{{ $date }}" class="bfh-input" onchange="this.form.submit()">
+            <div style="position:relative">
+                <input type="date" name="date" value="{{ $date }}" class="bfh-input" style="padding-right:40px" onchange="this.form.submit()">
+                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">📅</span>
+            </div>
         </form>
     </div>
 

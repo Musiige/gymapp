@@ -7,10 +7,30 @@
         </h2>
     </div>
 
-    {{-- Month filter --}}
-    <form method="GET" action="{{ route('admin.reports.corporate') }}" style="margin-bottom:20px">
-        <input type="month" name="month" value="{{ $month }}" class="bfh-input" onchange="this.form.submit()">
-    </form>
+   {{-- Filters --}}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+        <form method="GET" action="{{ route('admin.reports.corporate') }}">
+            <label class="bfh-form-label" style="display:block;margin-bottom:6px">By month</label>
+            <div style="position:relative">
+                <input type="month" name="month" value="{{ $month }}" class="bfh-input" style="padding-right:40px" onchange="this.form.submit()">
+                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">📅</span>
+            </div>
+        </form>
+        <form method="GET" action="{{ route('admin.reports.corporate') }}">
+            <label class="bfh-form-label" style="display:block;margin-bottom:6px">Or pick a day</label>
+            <div style="position:relative">
+                <input type="date" name="date" value="{{ $date }}" class="bfh-input" style="padding-right:40px" onchange="this.form.submit()">
+                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">📅</span>
+            </div>
+        </form>
+    </div>
+
+    @if($date)
+        <p style="color:#777;font-size:12px;margin-bottom:16px">
+            Showing {{ \Carbon\Carbon::parse($date)->format('d M Y') }} ·
+            <a href="{{ route('admin.reports.corporate') }}" style="color:#FF6B00;text-decoration:none">Clear and show by month</a>
+        </p>
+    @endif
 
     {{-- Grand total --}}
     <div class="bfh-card orange-border" style="margin-bottom:20px;text-align:center">

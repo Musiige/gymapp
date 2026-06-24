@@ -76,6 +76,7 @@ class ReportController extends Controller
     public function corporate(Request $request)
     {
         $month = $request->get('month', now()->format('Y-m'));
+        $date = $request->get('date');
         $monthDate = \Carbon\Carbon::createFromFormat('Y-m', $month);
 
         $companies = User::where('role', 'client')
@@ -100,26 +101,33 @@ class ReportController extends Controller
                 ->whereBetween('attended_at', [now()->startOfWeek(), now()->endOfWeek()])
                 ->count();
 
-            $monthAttendance = Attendance::whereIn('user_id', $clientIds)
-                ->whereMonth('attended_at', $monthDate->month)
-                ->whereYear('attended_at', $monthDate->year)
-                ->get()
-                ->groupBy('session_slot');
+            if ($date) {
+                $periodAttendance = Attendance::whereIn('user_id', $clientIds)
+                    ->whereDate('attended_at', $date)
+                    ->get()
+                    ->groupBy('session_slot');
+            } else {
+                $periodAttendance = Attendance::whereIn('user_id', $clientIds)
+                    ->whereMonth('attended_at', $monthDate->month)
+                    ->whereYear('attended_at', $monthDate->year)
+                    ->get()
+                    ->groupBy('session_slot');
+            }
 
             $report[$company] = [
                 'member_count' => $clientIds->count(),
                 'today' => $today,
                 'week' => $week,
-                'month_total' => $monthAttendance->flatten()->count(),
-                'morning' => $monthAttendance->get('morning', collect())->count(),
-                'midday' => $monthAttendance->get('midday', collect())->count(),
-                'evening' => $monthAttendance->get('evening', collect())->count(),
+                'month_total' => $periodAttendance->flatten()->count(),
+                'morning' => $periodAttendance->get('morning', collect())->count(),
+                'midday' => $periodAttendance->get('midday', collect())->count(),
+                'evening' => $periodAttendance->get('evening', collect())->count(),
             ];
         }
 
         $grandTotal = collect($report)->sum('month_total');
 
-        return view('admin.reports.corporate', compact('report', 'grandTotal', 'month'));
+        return view('admin.reports.corporate', compact('report', 'grandTotal', 'month', 'date'));
     }
     public function corporateAttendance(Request $request)
     {

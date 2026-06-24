@@ -30,7 +30,10 @@
 
             <div class="bfh-form-group">
                 <label class="bfh-form-label">Date</label>
-                <input type="date" name="date" value="{{ old('date', now()->format('Y-m-d')) }}" class="bfh-input" max="{{ now()->format('Y-m-d') }}">
+                <div style="position:relative">
+                    <input type="date" name="date" value="{{ old('date', now()->format('Y-m-d')) }}" class="bfh-input" style="padding-right:40px" max="{{ now()->format('Y-m-d') }}">
+                    <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">📅</span>
+                </div>
                 @error('date')<p class="bfh-error">{{ $message }}</p>@enderror
             </div>
 
@@ -116,7 +119,10 @@
                     @csrf
                     @method('PUT')
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-                        <input type="date" name="date" value="{{ $entry->date }}" class="bfh-input" style="padding:8px 10px;font-size:12px">
+                        <div style="position:relative">
+                            <input type="date" name="date" value="{{ $entry->date }}" class="bfh-input" style="padding:8px 32px 8px 10px;font-size:12px">
+                            <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none">📅</span>
+                        </div>
                         <select name="type" class="bfh-select" style="padding:8px 10px;font-size:12px">
                             <option value="demand" {{ $entry->type === 'demand' ? 'selected' : '' }}>I'm owed</option>
                             <option value="payment" {{ $entry->type === 'payment' ? 'selected' : '' }}>I received</option>
