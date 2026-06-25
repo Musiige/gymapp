@@ -2,9 +2,12 @@
 
     <div style="margin-bottom:24px">
         <a href="{{ route('admin.dashboard') }}" style="color:#555;font-size:13px;text-decoration:none">← Back to dashboard</a>
-      <h2 style="color:#fff;font-size:22px;font-weight:800;margin-top:8px">
-            Attendance <span style="color:#FF6B00">Report</span>
-        </h2>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <h2 style="color:#fff;font-size:22px;font-weight:800;margin-top:8px">
+                Attendance <span style="color:#FF6B00">Report</span>
+            </h2>
+            <a href="{{ route('admin.reports.corporate') }}" style="color:#FF6B00;font-size:11px;text-decoration:none;font-weight:600;margin-top:14px">Corporate report →</a>
+        </div>
         @if($filter === 'date')
             <p style="color:#777;font-size:13px;margin-top:4px">Showing {{ \Carbon\Carbon::parse($date)->format('d M Y') }}</p>
         @elseif($filter === 'month' && $month)

@@ -14,7 +14,7 @@ class AnnouncementController extends Controller
 public function index()
     {
         $clients = User::whereIn('role', ['client', 'trainer'])->get();
-        $sentAnnouncements = Announcement::latest()->get();
+        $sentAnnouncements = Announcement::latest()->paginate(5);
 
         return view('admin.announcements', compact('clients', 'sentAnnouncements'));
     }

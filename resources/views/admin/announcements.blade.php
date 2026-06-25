@@ -92,13 +92,13 @@
     </div>
 
     {{-- Sent announcements --}}
-    <div class="bfh-section-title" style="margin-top:24px">Sent announcements ({{ $sentAnnouncements->count() }})</div>
+    <div class="bfh-section-title" style="margin-top:24px">Sent announcements ({{ $sentAnnouncements->total() }})</div>
     @if($sentAnnouncements->isEmpty())
         <div class="bfh-card" style="text-align:center;padding:20px">
             <p style="color:#555;font-size:13px">No announcements sent yet.</p>
         </div>
     @else
-        @foreach($sentAnnouncements as $announcement)
+       @foreach($sentAnnouncements as $announcement)
             <div class="bfh-card" style="margin-bottom:10px">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px">
                     <div style="flex:1">
@@ -122,6 +122,22 @@
                 </div>
             </div>
         @endforeach
+
+        @if($sentAnnouncements->hasPages())
+            <div style="display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap">
+                @if($sentAnnouncements->onFirstPage())
+                    <span style="padding:8px 14px;background:#1e1e1e;color:#444;border-radius:8px;font-size:12px">← Prev</span>
+                @else
+                    <a href="{{ $sentAnnouncements->previousPageUrl() }}" style="padding:8px 14px;background:#1e1e1e;color:#888;border-radius:8px;font-size:12px;text-decoration:none">← Prev</a>
+                @endif
+                <span style="padding:8px 14px;background:#FF6B00;color:#fff;border-radius:8px;font-size:12px">{{ $sentAnnouncements->currentPage() }} / {{ $sentAnnouncements->lastPage() }}</span>
+                @if($sentAnnouncements->hasMorePages())
+                    <a href="{{ $sentAnnouncements->nextPageUrl() }}" style="padding:8px 14px;background:#1e1e1e;color:#888;border-radius:8px;font-size:12px;text-decoration:none">Next →</a>
+                @else
+                    <span style="padding:8px 14px;background:#1e1e1e;color:#444;border-radius:8px;font-size:12px">Next →</span>
+                @endif
+            </div>
+        @endif
     @endif
 
     <script>

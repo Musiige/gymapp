@@ -75,10 +75,9 @@ class ReportController extends Controller
     }
     public function corporate(Request $request)
     {
-        $month = $request->get('month', now()->format('Y-m'));
         $date = $request->get('date');
-        $monthDate = \Carbon\Carbon::createFromFormat('Y-m', $month);
-
+        $monthDate = $date ? \Carbon\Carbon::parse($date) : now();
+        $month = $monthDate->format('Y-m');
         $companies = User::where('role', 'client')
             ->where('is_corporate', true)
             ->pluck('company_name')
