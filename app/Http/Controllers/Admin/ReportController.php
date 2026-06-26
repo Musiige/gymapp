@@ -54,12 +54,15 @@ class ReportController extends Controller
             $query->whereMonth('attended_at', now()->month)->whereYear('attended_at', now()->year);
         }
 
-        $records = $query->orderByDesc('attended_at')->get();
+       $totalCount = $query->count();
+        $records = $query->orderByDesc('attended_at')->limit(100)->get();
+        $isCapped = $totalCount > 100;
+
         $grouped = $records->groupBy(function ($r) {
             return \Carbon\Carbon::parse($r->attended_at)->format('d M Y');
         });
 
-        return view('admin.reports.attendance', compact('grouped', 'filter', 'date', 'month'));
+        return view('admin.reports.attendance', compact('grouped', 'filter', 'date', 'month', 'totalCount', 'isCapped'));
     }
 
     public function paymentStatus(Request $request)

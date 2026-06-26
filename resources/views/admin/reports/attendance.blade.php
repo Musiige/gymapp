@@ -37,11 +37,17 @@
         </form>
     </div>
 
-    {{-- Total --}}
+   {{-- Total --}}
     <div class="bfh-card" style="margin-bottom:20px;text-align:center">
-        <div class="bfh-stat-value" style="font-size:36px">{{ $grouped->flatten()->count() }}</div>
+        <div class="bfh-stat-value" style="font-size:36px">{{ $totalCount }}</div>
         <div class="bfh-stat-sub">Total check-ins</div>
     </div>
+
+    @if($isCapped)
+        <div style="background:#1a1a0a;border:0.5px solid #3a3a0a;border-radius:10px;padding:10px 14px;margin-bottom:16px">
+            <p style="color:#FF6B00;font-size:12px">Showing the 100 most recent check-ins. Narrow your filter (week or a specific day) to see a more focused view.</p>
+        </div>
+    @endif
 
     {{-- Grouped by day --}}
     @if($grouped->isEmpty())
