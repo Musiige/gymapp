@@ -46,12 +46,15 @@
     </div>
 
     <div class="bfh-stat-grid">
+        <a href="{{ route('client.attendance') }}" style="text-decoration:none;color:inherit;display:block">
         <div class="bfh-stat">
             <div class="bfh-stat-label">Sessions</div>
             <div class="bfh-stat-value">{{ $attendanceCount }}</div>
             <div class="bfh-stat-sub">This month</div>
         </div>
+        </a>
   @if(!Auth::user()->is_corporate)
+        <a href="{{ route('client.payments') }}" style="text-decoration:none;color:inherit;display:block">
         <div class="bfh-stat">
             <div class="bfh-stat-label">Balance</div>
             <div class="bfh-stat-value grey">
@@ -61,6 +64,7 @@
                 {{ $subscription?->payment?->status === 'paid' ? 'Fully paid' : 'Outstanding' }}
             </div>
         </div>
+        </a>
         @else
         <div class="bfh-stat">
             <div class="bfh-stat-label">Status</div>

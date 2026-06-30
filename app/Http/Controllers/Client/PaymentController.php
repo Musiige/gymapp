@@ -24,7 +24,17 @@ class PaymentController extends Controller
         $payment = Payment::where('subscription_id', $subscription->id)
             ->first();
 
-        return view('client.payment', compact('subscription', 'payment'));
+       return view('client.payment', compact('subscription', 'payment'));
+    }
+
+    public function history()
+    {
+        $subscriptions = Subscription::where('user_id', Auth::id())
+            ->with(['membership', 'payment'])
+            ->latest()
+            ->get();
+
+        return view('client.payments', compact('subscriptions'));
     }
 
     /**

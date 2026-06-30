@@ -194,6 +194,12 @@ Route::get('/admin/allowances/{trainerId}', [App\Http\Controllers\Admin\Allowanc
     ->name('admin.reports.subscriptions');
     Route::get('/trainer/inbox', [App\Http\Controllers\Trainer\InboxController::class, 'index'])
     ->name('trainer.inbox');
+
+    Route::get('/client/attendance', [App\Http\Controllers\Client\AttendanceController::class, 'index'])
+    ->name('client.attendance');
+
+Route::get('/client/payments', [App\Http\Controllers\Client\PaymentController::class, 'history'])
+    ->name('client.payments');
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])
