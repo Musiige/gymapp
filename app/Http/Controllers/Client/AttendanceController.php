@@ -11,13 +11,14 @@ class AttendanceController extends Controller
     public function index()
     {
         $records = Attendance::where('user_id', Auth::id())
+            ->where('attended_at', '>=', now()->subDays(30))
             ->orderByDesc('attended_at')
-            ->get();
+            ->simplePaginate(20);
 
-        $grouped = $records->groupBy(function ($r) {
+        $grouped = $records->getCollection()->groupBy(function ($r) {
             return \Carbon\Carbon::parse($r->attended_at)->format('d M Y');
         });
 
-        return view('client.attendance', compact('grouped'));
+        return view('client.attendance', compact('grouped', 'records'));
     }
 }

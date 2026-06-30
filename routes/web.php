@@ -200,6 +200,9 @@ Route::get('/admin/allowances/{trainerId}', [App\Http\Controllers\Admin\Allowanc
 
 Route::get('/client/payments', [App\Http\Controllers\Client\PaymentController::class, 'history'])
     ->name('client.payments');
+Route::delete('/admin/clients/{id}', [App\Http\Controllers\Admin\ClientController::class, 'destroy'])
+    ->name('admin.clients.destroy');
+
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])

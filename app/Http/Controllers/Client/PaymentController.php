@@ -27,15 +27,16 @@ class PaymentController extends Controller
        return view('client.payment', compact('subscription', 'payment'));
     }
 
-    public function history()
-    {
-        $subscriptions = Subscription::where('user_id', Auth::id())
-            ->with(['membership', 'payment'])
-            ->latest()
-            ->get();
+public function history()
+{
+    $subscriptions = Subscription::where('user_id', Auth::id())
+        ->where('created_at', '>=', now()->subDays(30))
+        ->with(['membership', 'payment'])
+        ->latest()
+        ->simplePaginate(15);
 
-        return view('client.payments', compact('subscriptions'));
-    }
+    return view('client.payments', compact('subscriptions'));
+}
 
     /**
      * Initiates payment. For MoMo, this no longer marks the payment as paid —

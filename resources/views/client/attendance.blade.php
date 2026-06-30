@@ -5,21 +5,22 @@
         <h2 style="color:#fff;font-size:22px;font-weight:800;margin-top:8px">
             My <span style="color:#FF6B00">Attendance</span>
         </h2>
+        <p style="color:#555;font-size:12px;margin-top:4px">Showing last 30 days</p>
     </div>
 
     <div class="bfh-card" style="margin-bottom:20px;text-align:center">
         <div class="bfh-stat-value" style="font-size:36px">{{ $grouped->flatten()->count() }}</div>
-        <div class="bfh-stat-sub">Total sessions</div>
+        <div class="bfh-stat-sub">Sessions this period</div>
     </div>
 
     @if($grouped->isEmpty())
         <div class="bfh-card" style="text-align:center;padding:20px">
-            <p style="color:#555;font-size:13px">No attendance recorded yet.</p>
+            <p style="color:#555;font-size:13px">No attendance in the last 30 days.</p>
         </div>
     @else
-        @foreach($grouped as $date => $records)
-            <div class="bfh-section-title" style="margin-top:16px">{{ $date }} — {{ $records->count() }} session(s)</div>
-            @foreach($records as $record)
+        @foreach($grouped as $date => $dayRecords)
+            <div class="bfh-section-title" style="margin-top:16px">{{ $date }} — {{ $dayRecords->count() }} session(s)</div>
+            @foreach($dayRecords as $record)
                 <div class="bfh-card" style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
                     <div style="width:36px;height:36px;background:#2a2a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">
                         {{ $record->session_slot === 'morning' ? '🌅' : ($record->session_slot === 'midday' ? '☀️' : '🌙') }}
@@ -36,6 +37,19 @@
                 </div>
             @endforeach
         @endforeach
+
+        <div style="display:flex;justify-content:space-between;margin-top:20px">
+            @if($records->previousPageUrl())
+                <a href="{{ $records->previousPageUrl() }}" class="bfh-btn" style="width:48%;text-align:center">← Previous</a>
+            @else
+                <div style="width:48%"></div>
+            @endif
+            @if($records->nextPageUrl())
+                <a href="{{ $records->nextPageUrl() }}" class="bfh-btn" style="width:48%;text-align:center">Next →</a>
+            @else
+                <div style="width:48%"></div>
+            @endif
+        </div>
     @endif
 
 </x-becky-layout>

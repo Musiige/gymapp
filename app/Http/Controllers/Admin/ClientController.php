@@ -7,6 +7,10 @@ use App\Models\Attendance;
 use App\Models\SubscriptionChange;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Payment;
+use App\Models\WorkoutAssignment;
+use App\Models\AnnouncementRead;
+use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
@@ -139,5 +143,27 @@ class ClientController extends Controller
         return back()->with('success', $request->is_corporate
             ? $client->name . ' is now marked as a corporate client.'
             : $client->name . ' corporate status removed.');
+    }
+
+    public function destroy($id)
+    {
+        $client = User::where('role', 'client')->findOrFail($id);
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+        \App\Models\Attendance::where('user_id', $id)->delete();
+        \App\Models\Payment::where('user_id', $id)->delete();
+        \App\Models\SubscriptionChange::where('user_id', $id)->delete();
+        \App\Models\Subscription::where('user_id', $id)->delete();
+        \App\Models\WorkoutAssignment::where('client_id', $id)->delete();
+        \App\Models\AnnouncementRead::where('user_id', $id)->delete();
+        DB::table('sessions')->where('user_id', $id)->delete();
+
+        $client->delete();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        return redirect()->route('admin.clients')
+            ->with('success', $client->name . ' has been permanently deleted.');
     }
 }

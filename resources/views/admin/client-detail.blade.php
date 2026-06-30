@@ -289,4 +289,17 @@
         @endforeach
     @endif
 
+    {{-- Danger zone --}}
+    <div style="margin-top:32px;padding-top:20px;border-top:0.5px solid #2a2a2a">
+        <p style="color:#555;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Danger zone</p>
+        <form method="POST" action="{{ route('admin.clients.destroy', $client->id) }}"
+            onsubmit="return confirm('Permanently delete {{ $client->name }}? This removes all their subscriptions, payments, attendance and cannot be undone.')">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="bfh-btn danger" style="width:auto;padding:10px 20px">
+                🗑 Delete Client
+            </button>
+        </form>
+    </div>
+
 </x-becky-layout>
