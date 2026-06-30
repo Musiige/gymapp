@@ -52,7 +52,7 @@
             <div style="text-align:left;margin-top:10px">
                 <p style="color:#aaa;font-size:13px;margin-bottom:8px">💰 Cash — directly to your trainer or admin</p>
                 <p style="color:#aaa;font-size:13px;margin-bottom:8px">📱 MTN MoMo Pay — Merchant Code <strong style="color:#FF6B00">288560</strong> (*165*3#)</p>
-                <p style="color:#aaa;font-size:13px">📲 Airtel Pay — Merchant Code <strong style="color:#FF6B00">288560</strong> (*185*9#)</p>
+                <p style="color:#aaa;font-size:13px">📲 Airtel Pay — Merchant Code <strong style="color:#FF6B00">6855633</strong> (*185*9#)</p>
             </div>
             <p style="color:#555;font-size:12px;margin-top:16px;line-height:1.6">
                 Once payment is received, your trainer or admin will confirm it and activate your gym access immediately.

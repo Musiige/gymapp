@@ -14,7 +14,7 @@ class SubscriptionController extends Controller
 {
     public function index()
     {
-        $memberships = Membership::all();
+        $memberships = Membership::where('name', '!=', 'Corporate')->get();
         $activeSubscription = Subscription::where('user_id', Auth::id())
             ->whereIn('status', ['active', 'pending'])
             ->with('membership')

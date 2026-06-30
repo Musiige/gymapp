@@ -16,13 +16,13 @@
                     class="bfh-input" autocomplete="off">
                 <input type="hidden" name="client_id" id="selected-client-id">
 
-                <div id="client-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#1e1e1e;border:0.5px solid #333;border-radius:10px;margin-top:4px;max-height:240px;overflow-y:auto;z-index:50">
+                <div id="client-results" class="search-results-box" style="display:none;position:absolute;top:100%;left:0;right:0;border:0.5px solid #333;border-radius:10px;margin-top:4px;max-height:240px;overflow-y:auto;z-index:50">
                     @foreach($clients as $client)
-                        <div class="client-option" data-id="{{ $client->id }}" data-name="{{ $client->name }} — {{ $client->phone }}"
+                        <div class="client-option search-result-item" data-id="{{ $client->id }}" data-name="{{ $client->name }} — {{ $client->phone }}"
                             data-search="{{ strtolower($client->name . ' ' . $client->phone) }}"
                             style="padding:10px 14px;cursor:pointer;border-bottom:0.5px solid #2a2a2a">
-                            <p style="color:#fff;font-size:13px">{{ $client->name }}</p>
-                            <p style="color:#666;font-size:11px;margin-top:2px">{{ $client->phone }}</p>
+                            <p class="search-result-name" style="font-size:13px">{{ $client->name }}</p>
+                            <p class="search-result-phone" style="font-size:11px;margin-top:2px">{{ $client->phone }}</p>
                         </div>
                     @endforeach
                 </div>

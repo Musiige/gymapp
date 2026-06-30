@@ -12,7 +12,12 @@ Route::get('/qr', function () {
 })->name('qr');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $role = auth()->user()->role;
+    return match($role) {
+        'admin'   => redirect('/admin/dashboard'),
+        'trainer' => redirect('/trainer/dashboard'),
+        default   => redirect('/client/dashboard'),
+    };
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // MTN MoMo webhook — must stay OUTSIDE the 'auth' middleware group.

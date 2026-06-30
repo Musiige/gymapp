@@ -65,16 +65,22 @@
                     @csrf
                     <input type="hidden" name="workout_id" value="{{ $workout->id }}">
                     <div style="flex:1;position:relative">
-                        <input type="text"
+                        <input type="text" id="search-input-{{ $workout->id }}"
                             placeholder="Search client..."
-                            oninput="filterSelect(this, 'select-{{ $workout->id }}')"
-                            class="bfh-input" style="padding:10px 12px;margin-bottom:6px">
-                        <select name="client_id" id="select-{{ $workout->id }}" class="bfh-select" style="padding:10px 12px">
-                            <option value="">Select client</option>
+                            class="bfh-input" style="padding:10px 12px" autocomplete="off">
+                        <input type="hidden" name="client_id" id="select-{{ $workout->id }}">
+
+                        <div id="results-{{ $workout->id }}" class="search-results-box" style="display:none;position:absolute;top:100%;left:0;right:0;border:0.5px solid #333;border-radius:10px;margin-top:4px;max-height:200px;overflow-y:auto;z-index:50">
                             @foreach($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->name }} — {{ $client->phone }}</option>
+                                <div class="assign-option-{{ $workout->id }} search-result-item" data-id="{{ $client->id }}"
+                                    data-name="{{ $client->name }} — {{ $client->phone }}"
+                                    data-search="{{ strtolower($client->name . ' ' . $client->phone) }}"
+                                    style="padding:10px 14px;cursor:pointer;border-bottom:0.5px solid #2a2a2a">
+                                    <p class="search-result-name" style="font-size:13px">{{ $client->name }}</p>
+                                    <p class="search-result-phone" style="font-size:11px;margin-top:2px">{{ $client->phone }}</p>
+                                </div>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
                     <button type="submit" class="bfh-btn sm" style="width:auto;padding:10px 16px;white-space:nowrap">Assign</button>
                 </form>
@@ -83,13 +89,55 @@
     @endif
 
     <script>
-        function filterSelect(input, selectId) {
-            const select = document.getElementById(selectId);
-            const filter = input.value.toLowerCase();
-            Array.from(select.options).forEach(option => {
-                if (option.value === '') return;
-                option.style.display = option.text.toLowerCase().includes(filter) ? '' : 'none';
+        @foreach($workouts as $workout)
+        (function() {
+            const searchInput = document.getElementById('search-input-{{ $workout->id }}');
+            const resultsBox = document.getElementById('results-{{ $workout->id }}');
+            const hiddenInput = document.getElementById('select-{{ $workout->id }}');
+            const options = document.querySelectorAll('.assign-option-{{ $workout->id }}');
+
+            if (!searchInput) return;
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                hiddenInput.value = '';
+
+                if (query.length === 0) {
+                    resultsBox.style.display = 'none';
+                    return;
+                }
+
+                let anyVisible = false;
+                options.forEach(opt => {
+                    if (opt.dataset.search.includes(query)) {
+                        opt.style.display = 'block';
+                        anyVisible = true;
+                    } else {
+                        opt.style.display = 'none';
+                    }
+                });
+
+                resultsBox.style.display = anyVisible ? 'block' : 'none';
             });
-        }
+
+            searchInput.addEventListener('focus', function() {
+                if (this.value.trim().length > 0) resultsBox.style.display = 'block';
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#results-{{ $workout->id }}') && e.target !== searchInput) {
+                    resultsBox.style.display = 'none';
+                }
+            });
+
+            options.forEach(opt => {
+                opt.addEventListener('click', function() {
+                    searchInput.value = this.dataset.name;
+                    hiddenInput.value = this.dataset.id;
+                    resultsBox.style.display = 'none';
+                });
+            });
+        })();
+        @endforeach
     </script>
 </x-becky-layout>

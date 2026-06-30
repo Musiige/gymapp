@@ -52,6 +52,14 @@ body.light input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0
 body.light input[type="date"]::-webkit-calendar-picker-indicator:hover{opacity:1}
         .bfh-select{background:#1e1e1e;border:0.5px solid #2e2e2e;border-radius:10px;padding:13px 14px;width:100%;color:#fff;font-size:14px;outline:none;appearance:none;font-family:'Figtree',sans-serif}
         .bfh-select:focus{border-color:#FF6B00}
+.search-results-box{background:#1e1e1e}
+.search-result-name{color:#fff}
+.search-result-phone{color:#666}
+body.light .search-results-box{background:#fff;border-color:#e0e0e0}
+body.light .search-result-name{color:#111}
+body.light .search-result-phone{color:#888}
+body.light .search-result-item:hover{background:#f5f5f5}
+.search-result-item:hover{background:#2a2a2a}
         .bfh-form-group{margin-bottom:16px}
         .bfh-form-label{color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block}
         .bfh-error{color:#ff4444;font-size:12px;margin-top:4px}
