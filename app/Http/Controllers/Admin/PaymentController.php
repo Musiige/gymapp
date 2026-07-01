@@ -16,6 +16,7 @@ class PaymentController extends Controller
         $request->validate([
             'amount_paid'    => ['required', 'numeric', 'min:1'],
             'payment_method' => ['required', 'in:cash,momo,airtel'],
+            'paid_at'        => ['nullable', 'date'],
         ]);
 
         $subscription = Subscription::with('membership')->findOrFail($subscriptionId);
@@ -44,7 +45,7 @@ class PaymentController extends Controller
                 'status'               => $status,
                 'payment_method'       => $request->payment_method,
                 'transaction_id'       => 'CASH-' . strtoupper(Str::random(8)),
-                'paid_at'              => now(),
+                'paid_at'              => $request->paid_at ? \Carbon\Carbon::parse($request->paid_at) : now(),
                 'marked_paid_by_admin' => true,
                 'marked_by_admin_id'   => Auth::id(),
             ]
@@ -124,8 +125,9 @@ class PaymentController extends Controller
 public function editPayment(Request $request, $subscriptionId)
 {
     $request->validate([
-        'amount_paid' => ['required', 'numeric', 'min:0'],
-    ]);
+            'amount_paid' => ['required', 'numeric', 'min:0'],
+            'paid_at'     => ['nullable', 'date'],
+        ]);
 
     $subscription = Subscription::with('membership')->findOrFail($subscriptionId);
     $amountDue    = $subscription->custom_price ?? $subscription->membership->price;
@@ -149,7 +151,7 @@ public function editPayment(Request $request, $subscriptionId)
             'status'               => $status,
             'payment_method'       => 'cash',
             'transaction_id'       => 'EDIT-' . strtoupper(\Str::random(8)),
-            'paid_at'              => now(),
+            'paid_at'              => $request->paid_at ? \Carbon\Carbon::parse($request->paid_at) : now(),
             'marked_paid_by_admin' => true,
             'marked_by_admin_id'   => Auth::id(),
         ]
@@ -163,4 +165,31 @@ public function editPayment(Request $request, $subscriptionId)
 
     return back()->with('success', 'Payment updated to UGX ' . number_format($amountPaid) . '.');
 }
+public function editDates(Request $request, $subscriptionId)
+    {
+        $request->validate([
+            'start_date' => ['required', 'date'],
+            'end_date'   => ['required', 'date', 'after:start_date'],
+        ]);
+
+        $subscription = Subscription::findOrFail($subscriptionId);
+
+        $subscription->update([
+            'start_date' => \Carbon\Carbon::parse($request->start_date),
+            'end_date'   => \Carbon\Carbon::parse($request->end_date),
+        ]);
+
+        return back()->with('success', 'Subscription dates updated successfully.');
+    }
+    public function expireSubscription($subscriptionId)
+    {
+        $subscription = Subscription::findOrFail($subscriptionId);
+
+        $subscription->update([
+            'status'         => 'expired',
+            'access_granted' => false,
+        ]);
+
+        return back()->with('success', 'Subscription marked as expired and access revoked.');
+    }
 }

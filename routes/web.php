@@ -215,6 +215,12 @@ Route::delete('/admin/clients/{id}', [App\Http\Controllers\Admin\ClientControlle
 Route::post('/trainer/clients/{id}/assign-package', [App\Http\Controllers\Trainer\ClientController::class, 'assignPackage'])
     ->name('trainer.clients.assign-package');
 
+    Route::post('/admin/subscription/{subscription}/edit-dates', [App\Http\Controllers\Admin\PaymentController::class, 'editDates'])
+    ->name('admin.subscription.edit-dates');
+
+    Route::post('/admin/subscription/{subscription}/expire', [App\Http\Controllers\Admin\PaymentController::class, 'expireSubscription'])
+    ->name('admin.subscription.expire');
+
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])

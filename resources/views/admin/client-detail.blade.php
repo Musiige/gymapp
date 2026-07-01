@@ -146,6 +146,44 @@
     </div>
 @endif
 
+                {{-- Edit subscription dates --}}
+                @if(in_array($sub->status, ['active', 'pending']))
+                    <div style="background:#0a0a0a;border-radius:10px;padding:12px;margin-bottom:8px">
+                        <p style="color:#aaa;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">
+                            Edit subscription dates
+                        </p>
+                        <form method="POST" action="{{ route('admin.subscription.edit-dates', $sub->id) }}">
+                            @csrf
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+                                <div>
+                                    <p style="color:#555;font-size:11px;margin-bottom:4px">Start date</p>
+                                    <div style="position:relative">
+                                        <input type="date" name="start_date"
+                                            value="{{ \Carbon\Carbon::parse($sub->start_date)->format('Y-m-d') }}"
+                                            class="bfh-input" style="padding:8px 40px 8px 10px;font-size:12px">
+                                        <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none">📅</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p style="color:#555;font-size:11px;margin-bottom:4px">End date</p>
+                                    <div style="position:relative">
+                                        <input type="date" name="end_date"
+                                            value="{{ \Carbon\Carbon::parse($sub->end_date)->format('Y-m-d') }}"
+                                            class="bfh-input" style="padding:8px 40px 8px 10px;font-size:12px">
+                                        <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none">📅</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="color:#444;font-size:11px;margin-bottom:8px">
+                                Currently: {{ \Carbon\Carbon::parse($sub->start_date)->format('d M Y') }} → {{ \Carbon\Carbon::parse($sub->end_date)->format('d M Y') }}
+                            </p>
+                            <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 16px;background:#1a1a2a;border:0.5px solid #aaa;color:#aaa;white-space:nowrap">
+                                Save dates
+                            </button>
+                        </form>
+                    </div>
+                @endif
+
 {{-- Access toggle --}}
                 @if(in_array($sub->status, ['active', 'pending']))
                     <div style="display:flex;justify-content:space-between;align-items:center;background:#0a0a0a;border-radius:10px;padding:12px;margin-bottom:8px">
@@ -165,6 +203,7 @@
                     </div>
                 @endif
                 {{-- Cash payment form for active/pending with outstanding balance --}}
+               {{-- Record cash payment — only when not fully paid --}}
                 @if(in_array($sub->status, ['active', 'pending']) && (!$sub->payment || $sub->payment->status !== 'paid'))
                     <div style="background:#0a0a0a;border-radius:10px;padding:12px;margin-top:4px">
                         <p style="color:#FF6B00;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Record cash payment</p>
@@ -185,35 +224,67 @@
                                     Record
                                 </button>
                             </div>
+                            {{-- Backdate payment --}}
+                            <div style="margin-top:8px;position:relative">
+                                <p style="color:#555;font-size:11px;margin-bottom:4px">Payment date (leave blank for today)</p>
+                                <input type="date" name="paid_at"
+                                    value="{{ $sub->payment?->paid_at ? \Carbon\Carbon::parse($sub->payment->paid_at)->format('Y-m-d') : '' }}"
+                                    max="{{ now()->format('Y-m-d') }}"
+                                    class="bfh-input" style="padding-right:40px">
+                                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none">📅</span>
+                            </div>
                         </form>
-                        @if($sub->payment && $sub->payment->amount_paid > 0)
-    <div style="display:flex;gap:8px;margin-top:10px">
-        {{-- Edit payment --}}
-        <form method="POST" action="{{ route('admin.payment.edit', $sub->id) }}" style="flex:1">
-            @csrf
-            <div style="display:flex;gap:6px">
-                <input type="number" name="amount_paid"
-                    value="{{ $sub->payment->amount_paid }}"
-                    min="0"
-                    class="bfh-input" style="flex:1;padding:8px 10px;font-size:12px">
-                <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 12px;background:#1a2a3a;border:0.5px solid #4a9eff;color:#4a9eff;white-space:nowrap">
-                    Edit
-                </button>
-            </div>
-        </form>
-
-        {{-- Void payment --}}
-        <form method="POST" action="{{ route('admin.payment.void', $sub->id) }}"
-            onsubmit="return confirm('Are you sure you want to void this payment? This cannot be undone.')">
-            @csrf
-            <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 14px;background:#3a1a1a;border:0.5px solid #ff4444;color:#ff4444;white-space:nowrap">
-                Void
-            </button>
-        </form>
-    </div>
-@endif
                     </div>
                 @endif
+
+                {{-- Edit / Void — always visible when a payment exists, regardless of paid status --}}
+                @if($sub->payment && $sub->payment->amount_paid > 0)
+                    <div style="display:flex;gap:8px;margin-top:10px">
+                        {{-- Edit payment --}}
+                        <form method="POST" action="{{ route('admin.payment.edit', $sub->id) }}" style="flex:1">
+                            @csrf
+                            <div style="display:flex;gap:6px">
+                                <input type="number" name="amount_paid"
+                                    value="{{ $sub->payment->amount_paid }}"
+                                    min="0"
+                                    class="bfh-input" style="flex:1;padding:8px 10px;font-size:12px">
+                                <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 12px;background:#1a2a3a;border:0.5px solid #4a9eff;color:#4a9eff;white-space:nowrap">
+                                    Edit
+                                </button>
+                            </div>
+                            <div style="margin-top:6px;position:relative">
+                                <input type="date" name="paid_at"
+                                    value="{{ $sub->payment->paid_at ? \Carbon\Carbon::parse($sub->payment->paid_at)->format('Y-m-d') : '' }}"
+                                    max="{{ now()->format('Y-m-d') }}"
+                                    class="bfh-input" style="padding:8px 40px 8px 10px;font-size:12px">
+                                <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none">📅</span>
+                            </div>
+                        </form>
+
+                        {{-- Void payment --}}
+                        <form method="POST" action="{{ route('admin.payment.void', $sub->id) }}"
+                            onsubmit="return confirm('Are you sure you want to void this payment? This cannot be undone.')">
+                            @csrf
+                            <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 14px;background:#3a1a1a;border:0.5px solid #ff4444;color:#ff4444;white-space:nowrap">
+                                Void
+                            </button>
+                        </form>
+                    </div>
+                @endif
+
+                {{-- Expire subscription --}}
+                @if(in_array($sub->status, ['active', 'pending']))
+                    <div style="margin-top:8px;padding-top:10px;border-top:0.5px solid #222">
+                        <form method="POST" action="{{ route('admin.subscription.expire', $sub->id) }}"
+                            onsubmit="return confirm('Mark this subscription as expired? The client will lose gym access.')">
+                            @csrf
+                            <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 16px;background:#2a1a0a;border:0.5px solid #FF6B00;color:#FF6B00;white-space:nowrap">
+                                ⏹ Expire subscription
+                            </button>
+                        </form>
+                    </div>
+                @endif
+
             </div>
         @endforeach
     @endif
@@ -242,7 +313,7 @@
             </div>
         </form>
     </div>
-    
+
     {{-- Previous subscriptions link --}}
     @if($olderSubsCount > 0)
         <a href="{{ route('admin.clients.subscriptions', $client->id) }}" class="bfh-card" style="display:flex;justify-content:space-between;align-items:center;text-decoration:none;margin-top:8px;margin-bottom:16px">
