@@ -70,6 +70,12 @@ Route::get('/trainer/attendance', [App\Http\Controllers\Trainer\AttendanceContro
 Route::post('/trainer/attendance', [App\Http\Controllers\Trainer\AttendanceController::class, 'store'])
     ->name('trainer.attendance.store');
 
+    Route::put('/trainer/attendance/{id}', [App\Http\Controllers\Trainer\AttendanceController::class, 'update'])
+    ->name('trainer.attendance.update');
+
+Route::delete('/trainer/attendance/{id}', [App\Http\Controllers\Trainer\AttendanceController::class, 'destroy'])
+    ->name('trainer.attendance.destroy');
+
 Route::get('/trainer/workouts', [App\Http\Controllers\Trainer\WorkoutController::class, 'index'])
     ->name('trainer.workouts');
 

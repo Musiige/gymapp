@@ -52,7 +52,8 @@
         </div>
     @else
         @foreach($todayAttendance as $record)
-            <div class="bfh-card" style="display:flex;align-items:center;gap:14px;margin-bottom:10px">
+        <div class="bfh-card" style="margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:14px">
                 <div style="width:40px;height:40px;background:#2a2a2a;border:0.5px solid #3a3a3a;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FF6B00;font-size:13px;font-weight:700;flex-shrink:0">
                     {{ strtoupper(substr($record->client->name, 0, 2)) }}
                 </div>
@@ -67,7 +68,32 @@
                     </p>
                 </div>
             </div>
-        @endforeach
+
+            {{-- Edit slot + delete --}}
+            <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:0.5px solid #222">
+                <form method="POST" action="{{ route('trainer.attendance.update', $record->id) }}" style="display:flex;gap:6px;flex:1">
+                    @csrf
+                    @method('PUT')
+                    <select name="session_slot" class="bfh-select" style="flex:1;padding:8px 10px;font-size:12px">
+                        <option value="morning"  {{ $record->session_slot === 'morning'  ? 'selected' : '' }}>🌅 Morning</option>
+                        <option value="midday"   {{ $record->session_slot === 'midday'   ? 'selected' : '' }}>☀️ Midday</option>
+                        <option value="evening"  {{ $record->session_slot === 'evening'  ? 'selected' : '' }}>🌙 Evening</option>
+                    </select>
+                    <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 12px;background:#1a2a3a;border:0.5px solid #4a9eff;color:#4a9eff;white-space:nowrap">
+                        Save
+                    </button>
+                </form>
+                <form method="POST" action="{{ route('trainer.attendance.destroy', $record->id) }}"
+                    onsubmit="return confirm('Delete {{ $record->client->name }}\'s attendance for today?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bfh-btn sm" style="width:auto;padding:8px 14px;background:#3a1a1a;border:0.5px solid #ff4444;color:#ff4444;white-space:nowrap">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    @endforeach
     @endif
 
     <script>

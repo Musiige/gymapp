@@ -26,16 +26,14 @@
         : ($currentHour >= 8 && $currentHour < 16 ? 'midday'
         : ($currentHour >= 16 && $currentHour < 22 ? 'evening' : 'midday'));
 
-    $alreadyCheckedIn = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
-        ->where('session_slot', $currentSession)
-        ->whereDate('attended_at', today())
-        ->exists() : false;
+    $alreadyCheckedIn = \App\Models\Attendance::where('user_id', Auth::id())
+    ->whereDate('attended_at', today())
+    ->exists();
 
-    $trainerMarked = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
-        ->where('session_slot', $currentSession)
-        ->whereDate('attended_at', today())
-        ->where('marked_by', 'trainer')
-        ->exists() : false;
+    $trainerMarked = \App\Models\Attendance::where('user_id', Auth::id())
+    ->whereDate('attended_at', today())
+    ->where('marked_by', 'trainer')
+    ->exists();
 @endphp
 
     <div style="margin-bottom:24px">
@@ -127,16 +125,14 @@ $currentSession = $currentHour >= 5 && $currentHour < 8 ? 'morning'
     : ($currentHour >= 8 && $currentHour < 16 ? 'midday'
     : ($currentHour >= 16 && $currentHour < 22 ? 'evening' : 'midday'));
 
-    $alreadyCheckedIn = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
-        ->where('session_slot', $currentSession)
-        ->whereDate('attended_at', today())
-        ->exists() : false;
+    $alreadyCheckedIn = \App\Models\Attendance::where('user_id', Auth::id())
+    ->whereDate('attended_at', today())
+    ->exists();
 
-        $trainerMarked = $currentSession ? \App\Models\Attendance::where('user_id', Auth::id())
-    ->where('session_slot', $currentSession)
+        $trainerMarked = \App\Models\Attendance::where('user_id', Auth::id())
     ->whereDate('attended_at', today())
     ->where('marked_by', 'trainer')
-    ->exists() : false;
+    ->exists();
 @endphp
 
 <div class="bfh-section-title" style="margin-top:8px">Check in</div>

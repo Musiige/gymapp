@@ -116,15 +116,14 @@ return redirect()->route('client.payment', $newSubscription->id)
         return back()->with('error', 'Your gym access has not been activated yet. Please complete your payment or contact the front desk.');
     }
 
-   $already = \App\Models\Attendance::where('user_id', Auth::id())
-    ->where('session_slot', $request->session_slot)
+ $already = \App\Models\Attendance::where('user_id', Auth::id())
     ->whereDate('attended_at', today())
     ->first();
 
 if ($already) {
     $msg = $already->marked_by === 'trainer'
-        ? 'Your trainer has already marked your attendance for this session.'
-        : 'You have already checked in for this session today.';
+        ? 'Your trainer has already marked your attendance for today.'
+        : 'You have already checked in today.';
     return back()->with('error', $msg);
 }
 
