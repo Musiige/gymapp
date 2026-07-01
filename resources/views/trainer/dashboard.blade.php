@@ -8,16 +8,20 @@
     </div>
 
     <div class="bfh-stat-grid">
+        <a href="{{ route('trainer.clients') }}" style="text-decoration:none;color:inherit;display:block">
         <div class="bfh-stat">
             <div class="bfh-stat-label">Clients</div>
             <div class="bfh-stat-value">{{ $totalClients }}</div>
             <div class="bfh-stat-sub">Registered</div>
         </div>
+        </a>
+        <a href="{{ route('trainer.attendance') }}" style="text-decoration:none;color:inherit;display:block">
         <div class="bfh-stat">
             <div class="bfh-stat-label">Today</div>
             <div class="bfh-stat-value">{{ $todayAttendance }}</div>
             <div class="bfh-stat-sub">Attended</div>
         </div>
+        </a>
     </div>
 
     {{-- Attendance by session --}}

@@ -218,6 +218,31 @@
         @endforeach
     @endif
 
+{{-- Assign / change package --}}
+    <div style="background:#0a0a0a;border-radius:10px;padding:12px;margin-bottom:10px">
+        <p style="color:#4a9eff;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">
+            {{ $client->subscriptions->isEmpty() ? 'Assign package' : 'Change package' }}
+        </p>
+        <form method="POST" action="{{ route('admin.clients.assign-package', $client->id) }}"
+            onsubmit="return confirm('This will replace the client\'s current package. Continue?')">
+            @csrf
+            <div style="display:flex;gap:8px">
+                <select name="membership_id" class="bfh-select" style="flex:1;padding:10px 12px">
+                    <option value="">Select package</option>
+                    @foreach($memberships as $membership)
+                        <option value="{{ $membership->id }}">
+                            {{ $membership->name }} — UGX {{ number_format($membership->price) }}
+                            ({{ $membership->duration_days }} day{{ $membership->duration_days == 1 ? '' : 's' }})
+                        </option>
+                    @endforeach
+                </select>
+                <button type="submit" class="bfh-btn sm" style="width:auto;padding:10px 16px;white-space:nowrap">
+                    Assign
+                </button>
+            </div>
+        </form>
+    </div>
+    
     {{-- Previous subscriptions link --}}
     @if($olderSubsCount > 0)
         <a href="{{ route('admin.clients.subscriptions', $client->id) }}" class="bfh-card" style="display:flex;justify-content:space-between;align-items:center;text-decoration:none;margin-top:8px;margin-bottom:16px">

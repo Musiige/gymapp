@@ -64,8 +64,10 @@ class ClientController extends Controller
             return $sub->payment->amount_paid ?? 0;
         });
 
+        $memberships = \App\Models\Membership::where('name', '!=', 'Corporate')->get();
+
         return view('admin.client-detail', compact(
-            'client', 'attendance', 'changes', 'totalSessions', 'totalPaid'
+            'client', 'attendance', 'changes', 'totalSessions', 'totalPaid', 'memberships'
         ));
     }
 
@@ -165,5 +167,50 @@ class ClientController extends Controller
 
         return redirect()->route('admin.clients')
             ->with('success', $client->name . ' has been permanently deleted.');
+    }
+    public function assignPackage(Request $request, $id)
+    {
+        $request->validate([
+            'membership_id' => ['required', 'exists:memberships,id'],
+        ]);
+
+        $client = User::where('role', 'client')->findOrFail($id);
+        $membership = \App\Models\Membership::findOrFail($request->membership_id);
+
+        // Log change if there's an existing active/pending subscription
+        $existing = \App\Models\Subscription::where('user_id', $id)
+            ->whereNotIn('status', ['expired', 'changed'])
+            ->latest()
+            ->first();
+
+        if ($existing && $existing->membership_id != $membership->id) {
+            \App\Models\SubscriptionChange::create([
+                'user_id'           => $id,
+                'old_membership_id' => $existing->membership_id,
+                'new_membership_id' => $membership->id,
+                'changed_by'        => 'admin',
+                'changed_at'        => now(),
+            ]);
+        }
+
+        // Mark all current subscriptions as changed
+        \App\Models\Subscription::where('user_id', $id)
+            ->whereNotIn('status', ['expired', 'changed'])
+            ->update(['status' => 'changed']);
+
+        $startDate = \Carbon\Carbon::today();
+        $endDate   = $membership->duration_days === 1
+            ? \Carbon\Carbon::today()->endOfDay()
+            : \Carbon\Carbon::today()->addDays($membership->duration_days);
+
+        \App\Models\Subscription::create([
+            'user_id'       => $id,
+            'membership_id' => $membership->id,
+            'start_date'    => $startDate,
+            'end_date'      => $endDate,
+            'status'        => 'pending',
+        ]);
+
+        return back()->with('success', $membership->name . ' package assigned to ' . $client->name . '.');
     }
 }

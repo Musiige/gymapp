@@ -209,6 +209,12 @@ Route::get('/client/payments', [App\Http\Controllers\Client\PaymentController::c
 Route::delete('/admin/clients/{id}', [App\Http\Controllers\Admin\ClientController::class, 'destroy'])
     ->name('admin.clients.destroy');
 
+    Route::post('/admin/clients/{id}/assign-package', [App\Http\Controllers\Admin\ClientController::class, 'assignPackage'])
+    ->name('admin.clients.assign-package');
+
+Route::post('/trainer/clients/{id}/assign-package', [App\Http\Controllers\Trainer\ClientController::class, 'assignPackage'])
+    ->name('trainer.clients.assign-package');
+
 require __DIR__.'/auth.php';
 
 Route::get('/admin/clients', [App\Http\Controllers\Admin\ClientController::class, 'index'])
